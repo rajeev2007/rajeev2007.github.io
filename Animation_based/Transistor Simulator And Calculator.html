@@ -1,0 +1,584 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd"><html lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<title>Transistor Simulation</title>
+<STYLE type="text/css">
+body {
+    FONT-FAMILY: Arial;
+}
+A.barwhite {
+	COLOR: #ffffff; TEXT-DECORATION: none;
+}
+A.barwhite:hover {
+	COLOR: #ffffff; BACKGROUND-COLOR: #CCCC99;
+}
+A.barwhite:visited {
+	COLOR: #F89E58;
+}
+h1.main {
+	color:#A52A2A; font-size:1.2em;
+}
+tr.arrow {
+	background-color:#000000;
+}
+img.noborder {
+	border:0;
+}
+td.warn { background-color:#FF0000; }
+td.excl { background-color:#00FF00; }
+
+#tab1, #tab2 {
+	border-collapse: collapse;
+}
+
+#tab1 td, #tab2 td, #tab1 th, #tab2 th {
+	border: 1px solid #A52A2A;
+	padding: 7px;
+}
+
+#tab2 td { height:40px; }
+
+#tab1 th, #tab2 th {
+	background-color: #A52A2A;
+	color: #ffffff;
+	font-size: 1em;
+	padding: 7px;
+}
+
+#tab1 th.date, #tab2 th.date { width:100px; text-align:center; }
+td.num, #tab1 th.num, #tab2 th.num { width:80px; text-align:center; }
+#tab1 th.details, #tab2 th.details { width:500px; text-align:left; }
+#tab1 th.ref, #tab2 th.ref {width:250px; text-align:left; }
+#tab1 th.sno, #tab2 th.sno {width:30px; text-align:center; }
+#tab1 th.auth, #tab2 th.auth {width:250px; text-align:left; }
+#tab1 th.title, #tab2 th.title {width:180px; text-align:left; }
+#tab1 th.pub, #tab2 th.pub {width:180px; text-align:left; }
+#tab1 th.year, #tab2 th.year {width:50px; text-align:center; }
+#tab1 tr.alt td, #tab2 tr.alt td {
+	color: #000000;
+	background-color: #D3D2D1;
+}
+#tab1 td, #tab2 td { text-align:center; }
+#tab1 td.lf, #tab2 td.lf { text-align:left; }
+</STYLE>
+
+<link href="rss.xml" rel="alternate" type="application/rss+xml" title="Sitewide RSS Feed">
+<link rel="main" href="../index.html" title="Main Page">
+<link rel="homepage" href="../index.html" title="Rajeev Home Page">
+
+</head>
+<body style="background-color:#ffffff">
+
+<!-- The heading -->
+<table width="100%" cellpadding="5" cellspacing="0">
+<tr style="background-color:#A52A2A">
+<td style="width:150px"><a href="../Teaching.html"><img src="../pics/logo.png" style="width:180px; height:82px"
+	class="noborder" alt="Go to Rajeev Pandey homepage"></a></td>
+<td>&nbsp;<span style="font-size:2em;color:#ffffff">Transistor Simulator And Calculator</span>
+<br>&nbsp;<span style="font-size:1.2em;color:#ffffff">NPN</span>
+</td></tr>
+<!-- End of the heading -->
+
+<!-- Table that includes the main content -->
+
+<tr>
+<td style="background-color:#c1c1c1; width:150px"></td>
+
+<td valign="top" rowspan="2" background="../images/backg-ConvertImage.jpg">
+<!--Main Content Here -->
+
+<script src="Transistor%20Simulator%20And%20Calculator_files/ca-pub-8018289210612122.js"></script><script src="Transistor%20Simulator%20And%20Calculator_files/analytics.js" async=""></script><script language="JavaScript">
+<!--
+
+// CED subroutine for cleaning up JavaScript rounding errors 
+// to any reasonable number of decimal places 5/5/1997 last mod 2/19/2004
+// round for decimal of (value of precision) places, default is 3
+// This routine can be used to pass a number and a number for precision
+// or just a number only, that is to be rounded to a set number of decimal
+// places. This routine supports leading and trailing zeros, leading and
+// trailing spaces, and padding. To prevent errors, pass variables as a string.
+
+function perRound(num, precision) {
+    var precision = 3; //default value if not passed from caller, change if desired
+	// remark if passed from caller
+	precision = parseInt(precision); // make certain the decimal precision is an integer
+    var result1 = num * Math.pow(10, precision);
+    var result2 = Math.round(result1);
+    var result3 = result2 / Math.pow(10, precision);
+    return zerosPad(result3, precision);
+}
+
+function zerosPad(rndVal, decPlaces) {
+    var valStrg = rndVal.toString(); // Convert the number to a string
+    var decLoc = valStrg.indexOf("."); // Locate the decimal point
+    // check for a decimal 
+    if (decLoc == -1) {
+        decPartLen = 0; // If no decimal, then all decimal places will be padded with 0s
+        // If decPlaces is greater than zero, add a decimal point
+        valStrg += decPlaces > 0 ? "." : "";
+    }
+    else {
+        decPartLen = valStrg.length - decLoc - 1; // If there is a decimal already, only the needed decimal places will be padded with 0s
+    }
+     var totalPad = decPlaces - decPartLen;    // Calculate the number of decimal places that need to be padded with 0s
+    if (totalPad > 0) {
+        // Pad the string with 0s
+        for (var cntrVal = 1; cntrVal <= totalPad; cntrVal++) 
+            valStrg += "0";
+        }
+    return valStrg;
+}
+// send the value in as "num" in a variable
+
+// clears field of default value
+function clear_field(field) {
+		if (field.value==field.defaultValue) {
+			field.value=''
+		}
+	}
+
+// Array index values
+var idxVb = 1;
+var idxVCC = 2;
+var idxVEE = 3;
+var idxbeta = 4;
+var idxR1 = 5;
+var idxR2 = 6;
+var idxVc = 7;
+var idxVe = 8;
+var idxIb = 9;
+var idxIe = 10;
+var idxIc = 11;
+var idxsaturated = 12;
+var idxcutoff = 13;
+var idxP = 14;
+var idxpolarity = 15;
+var LF = String.fromCharCode(13,10);
+
+var hmsg = new Array(15);
+
+hmsg[idxbeta] = "ß - Beta  (Pronounced BAY-tah)" + LF + "A transistor characteristic: the ratio of collector current to base current." + LF + "Ic=Ib*beta or beta=Ic/Ib  The beta could be thought of as the gain of the transistor.";
+
+hmsg[idxcutoff] = "Cutoff" + LF + "The condition where the transtor is fully turned-off. In the simulation this condition occurs when the collector current drops to zero.";
+
+hmsg[idxVEE] = "Vee - Emitter Power Supply Voltage" + LF + "When this values is set to 0V, it's the same as connecting this point to ground.";
+
+hmsg[idxIb] = "Ib - Base Current" + LF + "In the simulation this value is derived from the formula Ib=Ie-Ic";
+
+hmsg[idxIc] = "Ic - Collector Current" + LF + "In the simulation this value is derived from the formula Ic=Ie*alpha (alpha=beta/(beta+1)) unless saturated in which case Ic=(Vcc-Vc)/R1";
+
+hmsg[idxIe] = "Ie - Emitter Current" + LF + "In the simulation this value is derived from the formula Ie=(Ve-Vee)/R2";
+
+hmsg[idxP] = "P - Power" + LF + "The power (heat) dissipated by the transistor. For common applications the power can be calculated with the formula" + LF + "P=(Vc-Ve)*Ic" + LF + "The simulation uses a slightly more accurate formula of" + LF + "P = (Vc-Ve)*Ic + (Vb-Ve)*Ib"
+
+hmsg[idxsaturated] = "Saturation" + LF + "The condition where the transistor is fully turned-on. In the simulation this condition occurs when the collector voltage drops down to the same as the base voltage.";
+
+hmsg[idxVe] = "Ve - Emitter Voltage" + LF + "The voltage on the emitter relative to ground. In the simulation this value is derived from the formula Ve=Vb-0.7 unless cutoff in which case Ve=Vee. The base to emitter junction acts like a diode and drops 0.7 volts when forward biased. 0.7 volts is the value for silicon transistors, for germanium transistors the value is 0.2 volts.";
+
+hmsg[idxVb] = "Vb - Base Voltage" + LF + "The voltage on the base relative to ground.";
+
+hmsg[idxVc] = "Vc - Collector Voltage" + LF + "The voltage on the collector relative to ground. In the simulation this value is derived from the formula Vc=Vcc-(Ic*R1) unless saturated in which case Vc=Vb";
+
+hmsg[idxVCC] = "Vcc - Collector Power Supply Voltage";
+
+hmsg[idxpolarity] = "Polarity" + LF + "Bipolar transistor come in two types, NPN and PNP."
+
+function reallyShowIt(msgIndex) {
+	document.IOform.explain.value = hmsg[msgIndex];
+	};
+
+var timerID = null;
+
+function showMsg(msgIndex) {
+	timerID = setTimeout("reallyShowIt("+msgIndex+")", 100);
+	};
+
+function dontShow() {
+	clearTimeout(timerID);
+	};
+
+function format(input, unit) {
+   // input = any floating point number, unit is a measurment unit symbol (example "V" for volts)
+   // output is a formated string with metric system multiplier
+   if ( (input <= 1e-13) && (input >= -1e-13) ) exponent = 0
+   else var exponent = Math.floor(Math.log(Math.abs(input))/Math.LN10);
+   var exponent3 = Math.floor(exponent/3)*3;
+   var mant = input*Math.pow(10,-exponent3);
+   if ( (mant <= 1e-4) && (mant >= -1e-4) ) var roundmult = 1
+   else var roundmult = Math.pow( 10, 4-Math.floor(Math.log(Math.abs(mant))/Math.LN10) );
+   mant = Math.round(mant*roundmult)/roundmult;
+   var symbol = "";
+   switch (exponent3) {
+      case 3 : symbol = "K"; break; // kilo
+      case -3 : symbol = "m";  break; // milli
+      case 6 : symbol = "M";  break; // mega
+      case -6 : symbol = "µ";  break; // micro
+      case 9 : symbol = "G";  break; // giga
+      case -9 : symbol = "n";  break; // nano
+      case 12 : symbol = "T";  break; // tera
+      case -12 : symbol = "f";  break; // femto
+      };
+   return mant + symbol + unit;
+   };
+
+transistorModel.prototype.readInputs = readInputs;
+transistorModel.prototype.refresh = refresh;
+transistorModel.prototype.display = display;
+transistorModel.prototype.setPolarity = setPolarity;
+transistorModel.prototype.recalculate = recalculate;
+transistorModel.prototype.restoreDefaults = defaults;
+transistorModel.prototype.NPNRecalculate = NPNRecalculate;
+transistorModel.prototype.PNPRecalculate = PNPRecalculate;
+
+var transistor = new transistorModel();
+
+function transistorModel() {
+	this.beta = 50;
+	this.Vb = 1;
+	this.Vcc = 10;
+	this.Vee = 0;
+	this.R1 = 1000;
+	this.R2 = 100;
+	this.polarity = "NPN";
+	};
+
+function readInputs() {
+	this.beta = parseFloat(document.IOform.beta.value);
+	this.Vb = parseFloat(document.IOform.Vb.value);
+	this.Vcc = parseFloat(document.IOform.Vcc.value);
+	this.Vee = parseFloat(document.IOform.Vee.value);
+	this.R1 = parseFloat(document.IOform.R1.value);
+	this.R2 = parseFloat(document.IOform.R2.value);
+	this.refresh()
+	};
+
+function refresh() {
+        this.recalculate();
+        this.display();
+	};
+
+function display() {
+	document.IOform.beta.value = this.beta;
+	document.IOform.Vb.value = Math.round(this.Vb*1000000)/1000000;
+	document.IOform.Vcc.value = this.Vcc;
+	document.IOform.Vee.value = this.Vee;
+	document.IOform.R1.value = format(this.R1, "");
+	document.IOform.R2.value = format(this.R2, "");
+	document.IOform.saturated.checked = this.saturated;
+	document.IOform.cutoff.checked = this.cutoff;
+	document.IOform.Vc.value = format(this.Vc, "V");
+	document.IOform.Ve.value = format(this.Ve, "V");
+	document.IOform.Ic.value = format(this.Ic, "A");
+	document.IOform.Ie.value = format(this.Ie, "A");
+	document.IOform.Ib.value = format(this.Ib, "A");
+	document.IOform.power.value = format(this.P, "W" );
+	};
+
+function setPolarity() {
+	switch (document.IOform.polarity.selectedIndex) {
+		case 0 : // NPN
+			if (this.polarity == "NPN") break;
+			this.polarity = "NPN"
+			document.schematic.src="npn.gif";
+			this.readInputs();
+			break;
+		case 1 : // PNP
+			if (this.polarity == "PNP") break;
+			this.polarity = "PNP"
+			document.schematic.src="pnp.gif";
+			this.readInputs();
+			break;
+		};
+	};
+
+function recalculate() {
+        switch (this.polarity) {
+                case "NPN" :
+                        this.NPNRecalculate()
+                        break;
+                case "PNP" :
+                        this.PNPRecalculate()
+                        break;
+                };
+        };
+
+function NPNRecalculate() {
+	this.alpha = this.beta/(this.beta+1);
+	this.Ve = this.Vb-0.7;
+	if (this.Ve <= (this.Vee + 1e-15)) this.Ve=this.Vee;	// if cutoff make sure Ve=Vee
+	this.Ie = (this.Ve-this.Vee)/this.R2;
+	this.saturated = (this.Vcc-this.R1*this.alpha*this.Ie) < this.Vb;
+	if (this.saturated) {
+		this.Vc = this.Vb;
+		this.Ic = (this.Vcc-this.Vc) / this.R1
+		}
+	else {
+	    this.Ic = this.Ie * this.alpha
+		this.Vc = this.Vcc-(this.Ic*this.R1);
+		};
+	this.Ib = this.Ie - this.Ic;
+	this.cutoff = (this.Ic<=0);
+	this.P = (this.Vc-this.Ve)*this.Ic + (this.Vb-this.Ve)*this.Ib;
+	};
+
+
+function PNPRecalculate() {
+	this.alpha = this.beta/(this.beta+1);
+	this.Ve = this.Vb+0.7
+	if (this.Ve >= (this.Vee - 1e-15)) this.Ve=this.Vee;
+	this.Ie = (this.Vee-this.Ve)/this.R2;
+    this.saturated = (this.Vcc+this.R1*this.alpha*this.Ie)>this.Vb;
+	if (this.saturated) {
+		this.Vc = this.Vb;
+		this.Ic = (this.Vc-this.Vcc) / this.R1
+		}
+	else {
+	    this.Ic = this.Ie * this.alpha
+		this.Vc = this.Vcc+(this.Ic*this.R1);
+		};
+	this.Ib = this.Ie - this.Ic;
+	this.cutoff = (this.Ic<=0);
+    this.P = (this.Ve-this.Vc)*this.Ic + (this.Ve-this.Vb)*this.Ib;
+	};
+
+function defaults() {
+	this.setPolarity();
+	switch (this.polarity) {
+		case "NPN" :
+			this.beta = 50;
+			this.Vb = 1;
+			this.Vcc = 10;
+			this.Vee = 0;
+			this.R1 = 1000;
+			this.R2 = 100;
+	        	this.refresh();
+			this.NPNRecalculate()
+			break;
+		case "PNP" :
+			this.beta = 50;
+			this.Vb = -1;
+			this.Vcc = -10;
+			this.Vee = 0;
+			this.R1 = 1000;
+			this.R2 = 100;
+	        	this.refresh();
+			this.PNPRecalculate()
+			break;
+		};
+	};
+
+//-->
+</script>
+</head>
+<body onload="transistor.readInputs()" bgcolor="FFFFFF" link="0000FF" text="000000" vlink="800080"><center>
+<font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+
+
+
+<script async="" src="Transistor%20Simulator%20And%20Calculator_files/adsbygoogle.js"></script>
+<style type="text/css">
+<!--
+body { font-family: Tahoma, Verdana; }
+input.btn {
+  color:black;
+  font: bold 75% 'tahoma',helvetica,sans-serif;
+  background-color:#ffd148;
+  border: 2px solid;
+  border-color: #c7c5c8;
+ }
+ 
+ input.btn2 {
+  color:black;
+  font: bold 95% 'tahoma',helvetica,sans-serif;
+  background-color:#ffd148;
+  border: 2px solid;
+  border-color: #c7c5c8;
+ 
+}
+//-->
+</style>
+<!--ROW 1-->
+<h1>Transistor Simulator And Calculator</h1>
+<br><br>
+</font><form name="IOform"><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+</font><center><font face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+
+
+<table cellpadding="5" align="center" border="0">
+<tbody><tr><!-- ROW 1 -->
+
+<td valign="TOP"><!-- COLUMN 1 -->
+<center><strong><big><font color="#FF0000">Inputs</font></big></strong></center><br>
+<tt>
+<strong>&nbsp;Voltages</strong><br>
+
+
+<a class="nu" href="javascript:showMsg(idxVCC)" onmouseover="showMsg(idxVCC)" onmouseout="dontShow()">V<sub>CC</sub></a>&nbsp;<input name="Vcc" value="10" size="10" type="text">
+
+<br>&nbsp;
+<p><a class="nu" href="javascript:showMsg(idxVb)" onmouseover="showMsg(idxVb)" onmouseout="dontShow()">V<sub>b&nbsp;</sub></a>&nbsp;<input name="Vb" value="1" size="10" type="text">
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input value=" + " onclick="document.IOform.Vb.value = transistor.Vb + 0.1; transistor.readInputs()" type="BUTTON">
+<input value=" - " onclick="document.IOform.Vb.value = transistor.Vb - 0.1; transistor.readInputs()" type="BUTTON">
+
+</p>
+<p><a class="nu" href="javascript:showMsg(idxVEE)" onmouseover="showMsg(idxVEE)" onmouseout="dontShow()">V<sub>EE</sub></a>&nbsp;<input name="Vee" value="0" size="10" type="text"><br></p></tt><p><tt><strong>Component Values</strong><br>
+
+<a class="nu" href="javascript:showMsg(idxpolarity)" onmouseover="showMsg(idxpolarity)" onmouseout="dontShow()">Polarity</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<select name="polarity" onchange="transistor.setPolarity()">
+        <option selected="selected">NPN
+        </option><option>PNP
+        </option></select>
+
+<br>
+<a class="nu" href="javascript:showMsg(idxbeta)" onmouseover="showMsg(idxbeta)" onmouseout="dontShow()">Beta</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="beta" value="50" size="10" type="text"><br>
+
+R<sub>1</sub>&nbsp;&nbsp;&nbsp;<input name="R1" value="1000" size="10" type="text"> Ohms<br>
+
+R<sub>2</sub>&nbsp;&nbsp;&nbsp;<input name="R2" value="100" size="10" type="text"> Ohms<br>
+
+</tt>
+</p></td>
+<td valign="TOP"><!-- COLUMN 2 -->
+
+<img src="Transistor%20Simulator%20And%20Calculator_files/npnxistor.gif" name="schematic" alt="Schematic" border="0" height="272" width="148">
+</td>
+<td valign="TOP"><!-- ROW 1 COLUMN 3 -->
+
+<center><strong><big><font color="#FF0000">Calculated Results</font></big></strong></center><br>
+<tt>
+<strong>&nbsp;Voltages</strong><br>
+
+<p><a class="nu" href="javascript:showMsg(idxVc)" onmouseover="showMsg(idxVc)" onmouseout="dontShow()">V<sub>c&nbsp;</sub></a><input name="Vc" value="7.0588V" size="10" type="text"><br>
+
+<br>&nbsp;
+</p></tt><p><tt><a class="nu" href="javascript:showMsg(idxVe)" onmouseover="showMsg(idxVe)" onmouseout="dontShow()">V<sub>e&nbsp;</sub></a><input name="Ve" value="300mV" size="10" type="text"><br>
+
+</tt>
+</p></td>
+<td><!-- ROW 1 COLUMN 4 -->
+<tt>
+
+<p><strong>&nbsp;Power</strong><br>
+
+<a class="nu" href="javascript:showMsg(idxP)" onmouseover="showMsg(idxP)" onmouseout="dontShow()">P</a>&nbsp;&nbsp;<input name="power" value="19.92mW" size="10" type="text">
+
+</p><p><strong>&nbsp;Currents</strong><br>
+
+<a class="nu" href="javascript:showMsg(idxIc)" onmouseover="showMsg(idxIc)" onmouseout="dontShow()">I<sub>c</sub></a>&nbsp;<input name="Ic" value="2.9412mA" size="10" type="text"><br>
+
+<a class="nu" href="javascript:showMsg(idxIb)" onmouseover="javascript:showMsg(idxIb)" onmouseout="dontShow()">I<sub>b</sub></a>&nbsp;<input name="Ib" value="58.824µA" size="10" type="text"><br>
+
+<a class="nu" href="javascript:showMsg(idxIe)" onmouseover="showMsg(idxIe)" onmouseout="dontShow()">I<sub>e</sub></a>&nbsp;<input name="Ie" value="3mA" size="10" type="text"><br>
+
+</p></tt><p><tt><strong>&nbsp;Conditions</strong><br>
+
+<input name="saturated" type="CHECKBOX">&nbsp;<a class="nu" href="javascript:showMsg(idxsaturated)" onmouseover="showMsg(idxsaturated)" onmouseout="dontShow()">Saturation</a><br>
+
+<input name="cutoff" type="CHECKBOX">&nbsp;<a class="nu" href="javascript:showMsg(idxcutoff)" onmouseover="showMsg(idxcutoff)" onmouseout="dontShow()">Cutoff</a>&nbsp;&nbsp;&nbsp;<br>
+
+</tt>
+</p></td>
+</tr>
+
+<tr><!-- ROW 2 -->
+<td colspan="4" align="center"><!-- ROW 2 COLUMN 1&2 -->
+<center>
+<input value="Recalculate" onclick="transistor.readInputs()" type="BUTTON"> &nbsp;
+&nbsp;&nbsp;&nbsp;
+<input value="Clear Values" type="Reset">
+</center>
+</td>
+</tr>
+<tr><!-- ROW 3 -->
+<td colspan="4">
+<center>
+<textarea cols="60" rows="5" name="explain" wrap="HARD">Pass mouse over any blue text area to see an explanation of the term or idea.</textarea>
+</center>
+</td>
+</tr></tbody></table>
+
+<p>
+<tr>
+<td valign="top" style="background-color:#c1c1c1; width:180px">
+<!-- Navigation bar -->
+<table cellSpacing="2" cellPadding="5%" width="250" style="background-color:#c1c1c1"  border="0">
+<tr bgcolor=#000000><td align=center height=30><font color=red>[<b> M E N U</b>]</td></tr>
+
+<tr class="arrow"><td><a href="Junction Field Effect Transistor Animation.html" title="JFET"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="Junction Field Effect Transistor Animation.html"
+class="barwhite" title="JFET"> JFET</a></td></tr>
+
+<tr class="arrow"><td><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/mosfet.html" title="Working of NMOS"><img src="../pics/arrownew.gif" class="noborder" alt="->"style="height:13px; width:13px"></a><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/mosfet.html" class="barwhite" title="NMOS Working"> NMOS</a></td></tr>
+
+<tr class="arrow"><td><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/jfet.html" title="Jfet-1"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/jfet.html"class="barwhite" title="Jfet">JFET</a> </li></a></td></tr>
+
+<tr class="arrow"><td><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/diode.html" title="Semiconductor Diode"><img src="../pics/arrownew.gif" class="noborder"alt="->" style="height:13px; width:13px"></a><a href="http://www-g.eng.cam.ac.uk/mmg/teaching/linearcircuits/diode.html" class="barwhite" title="Semiconductor Diode">Semiconductor Diode</a></td></tr>
+
+<tr class="arrow"><td><a href="Diode.html" title="Working of Diode"><img src="../pics/arrownew.gif" class="noborder"
+alt="->" style="height:13px; width:13px"></a><a href="Diode.html" class="barwhite" title="Working of Diode">Diode</a></td></tr>
+    
+<tr class="arrow"><td><a href="Biasing%20of%20D-Type%20MOSFET.html" title="Biasing of D-Type MOSFET"><img src="../pics/arrownew.gif"
+class="noborder" alt="->" style="height:13px; width:13px"></a><a href="Biasing%20of%20D-Type%20MOSFET.html" class="barwhite" title="Biasing of D-Type MOSFET">D-Type MOSFET</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Biasing%20of%20E-Type%20MOSFET.html" title="Biasing of E-Type MOSFET"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Biasing%20of%20E-Type%20MOSFET.html" class="barwhite" title="Biasing of E-Type MOSFET">E-Type MOSFET</a></td></tr>
+
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Transistor%20as%20a%20Switch.html" title="Transistor as a Switch"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Transistor%20as%20a%20Switch.html" class="barwhite" title="Transistor as a Switch">Transistor-Switch</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Differentiator.html" title="Differentiator"><img src="../pics/arrownew.gif" class="noborder" alt="->"style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Differentiator.html"class="barwhite" title="Differentiator"> Differentiator</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Integrator.html" title="Integrator"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Integrator.html" class="barwhite" title="Integrator"> Integrator</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Zener%20Regulation.html" title="Zener Regulation"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Zener%20Regulation.html" class="barwhite" title="Zener Regulation"> Zener Regulation</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Wien%20Bridge%20Oscillator.html" title="Wien-Bridge Oscillator"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Wien%20Bridge%20Oscillator.html" class="barwhite" title="Wien-Bridge Oscillator">Wien-Bridge Oscillator</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Colpitts%20Oscillator.html" title="Colpitts Oscillator"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Colpitts%20Oscillator.html" class="barwhite" title="Colpitts Oscillator"> Colpitts Oscillator</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Phase%20Shift%20Oscillator.html" title="Phase Shift Oscillator"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Phase%20Shift%20Oscillator.html" class="barwhite" title="Phase Shift Oscillator">Phase Shift Oscillator</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Half-wave%20Rectifier.html" title="Half-wave Rectifier"><img src="../pics/arrownew.gif" class="noborder" alt="->" style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Half-wave%20Rectifier.html" class="barwhite" title="Half-wave Rectifier">Half-wave Rectifier</a></td></tr>
+
+<tr class="arrow"><td><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Full-wave%20Rectifier.html" title="Full-wave Rectifier"><img src="../pics/arrownew.gif" class="noborder" alt="->"style="height:13px; width:13px"></a><a href="https://592e234bf6f2f26ff558871fe63efdf34f09e509.googledrive.com/host/0B5-tOHCf1hk8S2d4TWZzeDVTWWM/Animation_based/Full-wave%20Rectifier.html"class="barwhite" title="Full-wave Rectifier"> Full-wave Rectifier</a></td></tr>
+
+<tr class="arrow"><td><a href="../teaching.html" title="Teaching
+Page"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="../teaching.html"
+class="barwhite" title="Teaching"> Main</a></td></tr>
+
+
+</table>
+</td>
+<!-- End Navigation Bar -->
+</tr>
+</table>
+
+<p>
+<hr>
+
+<table cellspacing="2pt" cellpadding="1pt" style="margin:0pt 0pt 0pt 0pt;">
+<tr>
+<td align="center" valign="bottom" style="width:100px; background:#dfdfd7; color:inherit;">
+<a href="http://www.anybrowser.org/campaign/"><img
+    src="../pics/button-enhanced.gif" style="border:0;width:96px;height:32px" alt="Use Any Browser">
+    </a></td>
+<td align="right" valign="bottom" style="width:92px; background:#dfdfd7; color:inherit;">
+<a href="http://validator.w3.org/check?uri=referer"><img
+        src="../pics/valid-html401-blue"
+	style="border:0;height:31px;width:88px" alt="Valid HTML 4.01 Strict">
+</a>
+</td>
+<td align="right" valign="bottom" style="width:92px; background:#dfdfd7; color:inherit;">
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+  <img style="border:0;width:88px;height:31px"
+  src="../pics/valid-css-blue" alt="Valid CSS!"></a>
+</td>
+
+
+</tr></table>
+<div align='center'><a href='http://www.hit-counts.com'><img src='http://www.hit-counts.com/counter.php?t=MTM1MDQwNA==' border='0' alt='Free Hit Counter'></a></div>
+<p>Last updated on September 2015 at 15:16 IST</p></body>
+</html>
+

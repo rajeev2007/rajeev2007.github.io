@@ -1,0 +1,408 @@
+/*html, body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset {
+margin: 0;
+padding: 0;
+border: 0;
+}
+*/
+body{
+font-size: 12px;
+font-family: Arial, Helvetica, sans-serif;
+color: #000000;
+text-align: left;
+}
+#leftcol{
+margin-left: 0px;
+margin-top: 5px;
+width: 15em;
+margin-bottom: 20px;
+float: left;
+background-image: url(../images/leftcol_bg.jpg);
+background-repeat: no-repeat;
+
+}
+#leftcol h1{
+color: #3333CC;
+}
+/*Tabs at top of menu*/
+.menuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#3333CC;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:20px;
+display: block;
+background-image: url(../images/leftcol_bg_tx.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.menuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#000000;
+text-decoration:none;
+}
+.menuhead a:active{
+display:block;
+color:#ffffff; /*COLOR ON CLICK*/
+}
+/*.topmenuhead{
+font-size: 150%;
+text-align:left;
+color:#ffff00;
+margin-left: 5px;
+margin-right: 0px;
+padding-right: 5px;
+margin-top: 0px;
+display: block;
+background: #333366 url(../ac_theory/images/button_card.jpg) repeat-x;
+}*/
+
+/*COPIED FROM LAYOUT_CARDINAL>CSS*/
+*{margin:0;padding:0;border:none;}
+
+
+.menu{
+white-space:normal;
+display:block;
+position:relative;
+top:0em;
+left:0em;
+z-index:2;
+width:179px;
+border-right: 1px solid #000000;
+text-align:left;
+
+/*padding-bottom:12em;  To allow room for bottom dropdown */
+}
+.menu a{
+font:bold 90%/205% verdana,arial,helvetica,sans-serif;
+display:block;
+white-space:normal;
+margin:0;
+padding:0 0px;
+color:#999999;
+background-color:#eeeeee;
+text-decoration:none;
+}
+
+.module li a{
+font:bold 80%/205% verdana,arial,helvetica,sans-serif;
+display:block;
+white-space:normal;
+margin:0;
+padding:0 5px;
+color:#000000;
+text-align:right;
+text-decoration:none;
+border-right: 1px solid #000000;
+}
+ .module a:hover{/*SETS HOVER COLOR*/
+display:block;
+color:#3366FF;
+background-image: url(../ac_theory/images/button_card.jpg);
+background-repeat:repeat-x;
+}
+
+ .menu a:hover{/*SETS HOVER COLOR*/
+display:block;
+color:#3366FF;
+background-image:url(../ac_theory/images/button_card.jpg);
+background-repeat:repeat-x;
+}
+
+.menu a:active{
+display:block;
+color:#ffffff; /*COLOR ON CLICK*/
+}
+
+.menu ul{
+display:block;
+list-style:none;
+margin:0;
+padding:0;
+width:100%;
+}
+.menu ul li{
+display:block;
+font:bold 95%/205% verdana,arial,helvetica,sans-serif;
+color:#00ffFF;
+padding: 0px;
+}
+.menu ul li:hover{
+display:block;
+font:bold 95%/205% verdana,arial,helvetica,sans-serif;
+color:#000000;
+padding: 0px;
+background-image: url(../ac_theory/images/button_card.jpg);
+background-repeat:repeat-x;
+}
+
+/*SHARED STYLES?*/
+/*Sidebox for highlighted information */
+#sideboxnav {
+padding: 0;
+margin: 10px;
+width:80%;
+background-color:#eeeeee;
+color: #000000;
+border-style: solid;
+border-width: 1px;
+border-color: #000000;
+display: block;
+padding: 6px;
+}
+.colboxctr {
+
+text-align:center;
+padding: 0;
+margin: 10px;
+width: auto;
+background-color:#eeeedd;
+color: #000000;
+border-style: solid;
+border-width: 1px;
+border-color: #000000;
+display: block;
+padding: 6px;
+
+}
+#colbox p {
+margin: 10px 0 0 10px;
+color: #000000;
+}
+
+#colbox h3{
+color: #ffffff;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+#navctr{
+text-align: center;
+margin: 10px 0 0 10px;
+border-right:solid #000000 1px;
+}
+#navctr h2{
+font-size:150%;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+
+
+/*.menuhead{
+font-size: 150%;
+text-align:right;
+color:#99ccFF;
+margin-left: 5px;
+margin-right: 0px;
+padding-right: 5px;
+margin-top: 0px;
+display: block;
+background-image: url(../images/banner_sml.jpg);
+background-repeat: no-repeat;
+}*/
+.acmenuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#990000;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:25px;
+display: block;
+background-image: url(../ac_theory/images/leftcol_bg_card.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.acmenuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#000000;
+text-decoration:none;
+}
+.acmenuhead a:active{
+display:block;
+color:#fff; /*COLOR ON CLICK*/
+}
+
+.ampmenuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#006600;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:25px;
+display: block;
+background-image: url(../ac_theory/images/leftcol_bg_card.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.ampmenuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#000000;
+text-decoration:none;
+}
+.ampenuhead a:active{
+display:block;
+color:#fff; /*COLOR ON CLICK*/
+}
+
+.oscmenuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#663300;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:25px;
+display: block;
+background-image: url(../ac_theory/images/leftcol_bg_card.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.oscmenuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#000000;
+text-decoration:none;
+}
+.oscmenuhead a:active{
+display:block;
+color:#fff; /*COLOR ON CLICK*/
+}
+
+.psumenuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#003366;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:25px;
+display: block;
+background-image: url(../ac_theory/images/leftcol_bg_card.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.psumenuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#000000;
+text-decoration:none;
+}
+.psumenuhead a:active{
+display:block;
+color:#fff; /*COLOR ON CLICK*/
+}
+
+.digmenuhead a{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+text-decoration:none;
+color:#006699;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+height:25px;
+display: block;
+background-image: url(../ac_theory/images/leftcol_bg_card.jpg);
+background-repeat: no-repeat;
+border-right: 1px solid #000000;
+}
+.digmenuhead a:hover{
+font-size: 100%;
+font-weight:bold;
+text-align:center;
+display:block;
+white-space:normal;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+padding-right: 0px;
+padding-top: 5px;
+padding-bottom: 0px;
+color:#990000;
+text-decoration:none;
+}
+.digmenuhead a:active{
+display:block;
+color:#fff; /*COLOR ON CLICK*/
+}

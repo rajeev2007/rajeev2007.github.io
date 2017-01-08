@@ -1,0 +1,598 @@
+html, body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset {
+margin: 0;
+padding: 0;
+border: 0;
+}
+
+body {
+font-size: 12px;
+font-family: Arial, Helvetica, sans-serif;
+color: #000000;
+text-align: left;
+}
+
+/*********************************************Wrapper*********************************************/
+#wrapper {
+width:100%;
+border:0;
+text-align: left;
+}
+#wrapper h1{
+font-size:200%;
+font-family:  Arial, Helvetica, sans-serif;
+color: #3333cc;
+padding: 0;
+margin: 0px 0 10px 10px;
+}
+#wrapper h2{
+font-size:150%;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+#wrapper h3{
+font-size:120%;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+/********************************************Banner**************************************************/
+#banner {
+text-align:right; 
+height: auto;
+background-color:#ffffff;
+background-image: url(../images/banner_index2.jpg);background-position: right top;
+background-repeat: no-repeat;
+text-align: right;
+}
+#banner h1{
+font-size: 50px;
+font-family: Abadi,Arial-narrow,Helvetica,sans-serif;
+color: #ffffff;
+padding: 10px;
+font-weight: lighter;
+}
+#banner h2{
+position:relative;
+left: -15px;
+top: -40px;
+font-size: 40px;
+font-family: Abadi,Arial-narrow,Helvetica,sans-serif;
+color: #99ccff;
+padding: 0px;
+font-weight: lighter;
+}
+
+/************************************************************************************
+Homebar = TOPIC MENU
+*************************************************************************************/
+#homebar{
+height:auto;
+width:100%;
+background: url('../Resistors/images/homebar_bg.jpg');
+background-size: 100% 100%;
+background-repeat: no-repeat;
+background-position: center;
+border-radius: 1em 0em 1em 1em ;
+box-shadow:0.5em 0.5em 0.5em #888;
+padding-bottom:0.75em;
+margin-bottom:1em;
+margin-top:-1.75em;
+}
+#homebar ul {
+margin-top:0em;
+margin-bottom:0em;
+padding-left:0.5em;
+border-radius: 0.5em 0.5em 0em 0em ;
+}
+#homebar ul li{
+font-size:1.3em;
+height:auto;
+color: #000000;
+padding-top:0.5em;
+margin:0em 0.75em 0 0.5em;
+font-family: 'PT Sans', Arial, sans-serif;
+font-weight: bold;
+
+display:inline-block;
+width:auto;
+}
+#homebar ul li a{
+color:#000000;
+text-decoration:none;
+
+}
+#homebarsel {
+font-weight:bold;
+color:#ffffff;
+background-color:#4466ff;
+padding:0.3em;
+border-radius: 0.25em 0.25em 0.25em 0.25em;
+}
+
+/*************************Top Navigation Bar********************************/
+#topnav ul {
+margin: 0;
+padding: 0;
+list-style: none;
+font-size: 90%;
+font-weight:bold;
+width: 100%;
+float:left;
+background: #333366 url(../images/button.jpg) repeat-x;
+}
+
+#topnav ul li {
+float:left;
+}
+
+#topnav ul li a {
+display: block;
+float:left;
+padding: 0 0.7em;
+line-height: 2em;
+border-right: 1px solid #666666;
+text-decoration: none;
+font-weight:bold;
+color:#000000;
+}
+
+#topnav ul .first a {
+background:none;
+border-left: 1px solid #666666;
+}
+
+#topnav ul a:hover {
+color:#3333ff;
+font-weight:bold;
+}
+
+.box{
+width: 170px;
+margin-left: 5px;
+margin-right: 5px;
+margin-top: 5px;
+float: left;
+display:inline;
+background-image: url(../images/boxtop_bg.jpg);
+background-repeat: no-repeat;
+}
+
+.box h3{
+margin: 0;
+border-right: 1px solid #000000;
+padding-right: 5px;
+}
+
+.box p{
+margin: 0;
+border-right: 1px solid #000000;
+border-top:none;
+padding-right: 5px;
+}
+
+
+
+/***********************************Right Column*******************************/
+#rightcol{
+background-color:#ffffff;
+width: 20%;
+display:inline;
+/*margin-left: 10px;
+margin-top: 0px;
+margin-bottom: 20px;
+padding-left: 3px;
+padding-right: 5px;*/
+border-left: 1px solid #000000;
+text-align: left;
+float: right;
+}
+#rightcol p {
+margin: 10px 0 0 10px;
+color: #000000;
+}
+.leftbox {
+float:left;
+padding: 0;
+margin: 10px;
+width:45%;
+background-color:#eeeeee;
+color: #000000;
+border-style: solid;
+border-width: 1px;
+border-color: #000000;
+display: block;
+padding: 6px;
+border-radius: 0.5em 0.5em 0.5em 0.5em;
+box-shadow:3px 3px 3px #666666;
+}
+#sideboxrt {
+padding: 0;
+margin: 10px;
+width:80%;
+background-color:#eeeeee;
+color: #000000;
+border-style: solid;
+border-width: 1px;
+border-color: #000000;
+display: block;
+padding: 6px;
+}
+
+/* Google site search*/
+#searchbox{
+margin-top: 0px;
+border-right: 1px solid #000000;
+color: #000000;
+display: block;
+padding: 6px;
+font-size: 80%;
+}
+
+/*Sidebox for highlighted information */
+#sideboxright {
+
+padding: 0;
+margin: 10px; 
+background-color:#eeeeee;
+color: #000000;
+display: block;
+padding: 6px;
+
+}
+#sideboxright p {
+margin: 10px 0 0 10px;
+color: #000000;
+}
+
+.sideboxright h3{
+color: #000099;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+
+#sidebox p {
+margin: 10px 0 0 10px;
+color: #000000;
+}
+
+#sidebox h3{
+color: #ffffff;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+.imagectr{
+text-align: center;
+margin: 10px 0 0 10px;
+}
+.block{
+width:50%;
+padding: 0;
+margin: 10px; 
+color: #000000;
+text-align:justify;
+
+}
+/********************************main content layout*****************************************/
+#content{
+width:55%;
+overflow:auto;
+}
+
+#content p{
+margin: 10px 0 0 10px;
+}
+
+#content h1{
+font-size:200%;
+font-family:  Arial, Helvetica, sans-serif;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 10px 10px;
+}
+
+#content h2{
+font-size:150%;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+
+#content h3{
+font-size:120%;
+color: #3333cc;
+padding: 0;
+margin: 20px 0 0 10px;
+}
+
+#content ul li{
+color: #000000;
+padding: 4px 6px 10px 10px;
+text-decoration: none;
+list-style-type: none;
+}
+#quiz{
+float: left;
+width:80%;
+overflow:auto;
+}
+
+#quiz p {
+margin: 10px 0 0 10px;
+color: #000000;
+}
+.quizq{
+padding: 5px;
+font-weight:bold;
+width: 90%;
+clear: left;
+font-size:100%;
+color: #000000;
+border-top: 1px solid #000000;
+}
+
+.quizans{
+padding: 5px;
+float:left;
+width: 20%;
+font-size:100%;
+color: #000000;
+margin-bottom: 30px;
+}
+/*****************************Columns for sitemap************************************/
+.col2{
+border-left: 5px solid #cccccc;
+margin-left: 20px;
+margin-top: 0px;
+width: 150px;
+float: left;
+}
+.greyheader {
+width:95%;
+background-color:#eeeeee;
+border-bottom: 5px solid #cccccc;
+color: #000000;
+display: block;
+margin-left: 0px;
+}
+.greyheader_top {
+width:95%;
+background-color:#eeeeee;
+border-bottom: 5px solid #cccccc;
+color: #000000;
+display: block;
+margin-left: 20px;
+}
+/*****************************floated image holders************************************/
+.leftimage{
+float: left;
+margin: 20px 5px 0 10px;
+border: 0px;
+}
+
+.rightimage{
+	float: right;
+	margin-left: 5px;
+	border: 0px;
+}
+
+.listimage{
+float: left;
+margin: 0px 5px 0 10px;
+border: 1px;
+}
+
+.smlimage{
+margin: 20px 5px 0 10px;
+border: 0px;
+}
+
+.A4image{
+width:inherit;
+margin: 20px 5px 0 10px;
+border: 0px;
+}
+/* Used to clear floated divs */
+.clearit{
+clear: both;
+
+}
+/* Starts new content underneath any left floated imgae or content*****/
+.clearleft{
+clear: left;
+background-color:#ffffff;
+width: 200px;
+}
+
+#content p.right{
+float: right;
+}
+/********************************************footer bar*********************************************/
+#footer{
+background-color: #6699cc;
+color: #FFFFFF;
+clear: both;
+}
+
+#footer p {
+padding: 3px;
+}
+
+.container{
+
+}
+table.sample {
+	margin:10px;
+	border-width: thin thin thin thin;
+	border-spacing: 2px;
+	border-style:solid ;
+	border-color: #eeeeee;
+	border-collapse: separate;
+	background-color: white;
+	text-align:center;
+}
+table.sample th {
+	border-width: 1px 1px 1px 1px;
+	padding: 2px 2px 2px 2px;
+	border-style: solid;
+	border-color: #eeeeee;
+	background-color:#99CCFF;
+	
+}
+table.sample td {
+	border-width: 1px 1px 1px 1px;
+	padding: 2px 2px 2px 2px;
+	border-style:solid;
+	border-color:#eeeeee;
+	background-color: white;
+	
+}
+/********************Mouseover-test*************************/
+/*Credits: Dynamic Drive CSS Library */
+
+
+.thumbnail{
+position: absolute;
+z-index: 0;
+}
+
+.thumbnail:hover{
+background-color: transparent;
+z-index: 0;
+}
+
+.thumbnail span{ /*CSS for enlarged image*/
+position: absolute;
+visibility: hidden;
+}
+
+.thumbnail span img{ /*CSS for enlarged image*/
+border-width: 0;
+}
+
+.thumbnail:hover span{ /*CSS for enlarged image on hover*/
+visibility: visible;
+top: 0;
+left: 0; /*position where enlarged image should offset horizontally */
+
+}
+/***************************End-of-mousover-test*******************/
+
+/************************************************************************************
+MEDIA QUERIES    Tablet Portrait(768x1024) Affects 600x 800 portrait and 768 x 1024 portrait
+************************************************************************************/
+@media only screen and (min-width : 768px) {  
+.img{max-width: 100%;}
+.rightimage img{max-width: 100%;}
+.leftimage img{max-width: 100%;}
+.toppic img{max-width: 100%;}
+.reducepic img{max-width: 100%; }
+.animation{max-width: 100%;}
+.reduceleftpic img{max-width: 60%;}
+.reducerightpic img{max-width: 100%;}
+.reducecenterpic img{max-width: 100%;}
+#learningbox{width: 35%;}
+.emphasisbox{width:92%; }
+.leftbox{width:95%;}
+.object {max-width:100%;}
+#container{width: 31em;}
+#content {
+max-width:100%;
+float: none;
+padding-right:1em;
+}
+.subheadbox {
+width:auto;
+max-width:60%;
+}
+}
+/************************************************************************************
+MEDIA QUERIES        Small Tablet Portrait(600x800)
+************************************************************************************/
+@media only screen and (min-width : 514px) and (max-width : 767px)  {  
+.img{max-width: 100%;}
+.rightimage img{max-width: 100%;}
+.leftimage img{max-width: 100%;}
+.toppic img{max-width: 100%;}
+.reducepic img{max-width: 100%; }
+.animation{max-width: 100%;}
+.reduceleftpic img{max-width: 60%;}
+.reducerightpic img{max-width: 100%;}
+.reducecenterpic img{max-width: 50%;}
+#learningbox{width: 35%;}
+.emphasisbox{width:92%; }
+.object {max-width:100%;}
+#container{width: 31em;}
+.leftbox{width:100%;}
+#content {
+max-width:100%;
+float: none;
+padding-right:1em;
+}
+
+.sideads{display:none;}
+
+.subheadbox {
+width:auto;
+max-width:60%;
+}
+}  
+/************************************************************************************
+MEDIA QUERIES       Mobile Portrait(320x480) NONE
+************************************************************************************/
+@media only screen and (min-width : 320px) and (max-width : 513px) {
+.img{max-width: 100%;}
+.rightimage img{max-width: 100%;}
+.leftimage img{max-width: 100%;}
+.toppic img{max-width: 100%;}
+.reducepic img{max-width: 100%; }
+.animation{max-width: 100%;}
+.reduceleftpic img{max-width: 100%;}
+.reducerightpic img{max-width: 100%;}
+.reducecenterpic img{max-width: 100%;}
+#learningbox{width: 100%;}
+.emphasisbox{width:92%; }
+.object {max-width:100%;}
+#container{width: 31em;}
+.leftbox{width:100%;}
+
+.title h1{font-size: 2em;}
+.title h2{
+margin-top:-0.5em;
+margin-bottom:0.75em;
+font-size: 1.5em;}
+.sideads{display:none;}
+
+#content {
+width: auto;
+float: none;
+padding-right:1em;
+}
+}
+/************************************************************************************
+MEDIA QUERIES			Mobile portrait screens up to 329px viewport 321wide NONE
+************************************************************************************/
+@media only screen and (max-width : 319px) { 
+.img { max-width: 100%;}
+.rightimage img{max-width: 100%;}
+.leftimage img{max-width: 100%;}
+.toppic img{max-width: 100%;}
+.reducepic img{max-width: 95%;}
+.reduceleftpic img{max-width: 100%;}
+.reducerightpic img{max-width: 100%;}
+.reducecenterpic img{width: 100%;}
+#learningbox {width:100%;}
+.emphasisbox { width:92%; }
+.object {width:100%;}
+#header background-image {height:200px;}
+.leftbox{width:100%;}
+
+.sideads{display:none;}
+
+#content {
+width: auto;
+float: none;
+padding-right:1em;
+}
+}
+

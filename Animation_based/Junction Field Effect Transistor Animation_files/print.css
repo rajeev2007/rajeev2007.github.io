@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+  color : #000000;
+  background-image: none;
+  background : #ffffff;
+  font-family : "Times New Roman", Times, serif;
+  font-size : 12pt;
+  text-align:justify;
+  
+}
+#figure{
+page-break-inside:avoid;
+}
+
+a {
+  text-decoration : underline;
+  color : #0000ff;
+}
+ #banner, #topnav, .topbar, #leftcol, #rightcol{
+  display : none;
+} 
+#content{
+width:auto;
+overflow:auto;
+float: none;
+margin: 8px;
+overflow: visible;
+}
