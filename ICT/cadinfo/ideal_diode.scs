@@ -1,0 +1,5 @@
+// Ideal diode, bipolar transistor models
+
+model ideal_diode diode level=1 is=0.1f
+model ideal_npn bjt type=npn is=0.1f bf=100 va=25 tf=10p
+model ideal_pnp bjt type=pnp is=0.1f bf=100 va=25 tf=10p

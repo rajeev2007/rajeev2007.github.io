@@ -1,0 +1,89 @@
+INTRODUCTION: This report contains the lot average results obtained by MOSIS
+              from measurements of MOSIS test structures on each wafer of
+              this fabrication lot. SPICE parameters obtained from similar
+              measurements on a selected wafer are also attached.
+
+COMMENTS: TSMC 035
+
+
+TRANSISTOR PARAMETERS     W/L      N-CHANNEL P-CHANNEL  UNITS
+                                                       
+ MINIMUM                  0.6/0.4                      
+  Vth                                   0.55     -0.72  volts
+                                                       
+ SHORT                    20.0/0.4                     
+  Idss                                538      -249     uA/um
+  Vth                                   0.58     -0.69  volts
+  Vpt                                   9.1      -9.6   volts
+                                                       
+ WIDE                     20.0/0.4                     
+  Ids0                                < 2.5     < 2.5   pA/um
+                                                       
+ LARGE                    50/50                        
+  Vth                                   0.51     -0.70  volts
+  Vjbkd                                 8.6      -8.5   volts
+  Ijlk                                <50.0     <50.0   pA
+  Gamma                                 0.58      0.36  V^0.5
+                                                       
+ K' (Uo*Cox/2)                         91.8     -34.9   uA/V^2
+ Low-field Mobility                   404.09    153.63  cm^2/V*s
+                                                       
+COMMENTS: Poly bias varies with design technology. To account for mask
+           bias use the appropriate value for the parameter XL in your
+           SPICE model card.
+                       Design Technology                   XL (um)  XW (um)
+                       -----------------                   -------  ------
+                       SCMOS_SUBM (lambda=0.20)            -0.05     0.15
+                                     thick oxide           -0.10     0.15
+                       SCMOS      (lambda=0.25)            -0.15     0.15
+                                     thick oxide           -0.25     0.15
+
+
+FOX TRANSISTORS           GATE      N+ACTIVE  P+ACTIVE  UNITS
+ Vth                      Poly        >10.0    <-10.0   volts
+
+
+
+PROCESS PARAMETERS     N+     P+    POLY  POLY2  POLY2_ME   M1    M2   UNITS
+ Sheet Resistance      77.9  153.6  8.3   44.7             0.07  0.08  ohms/sq
+ Contact Resistance    65.6  126.8  6.6   37.9                   1.19  ohms
+ Gate Oxide Thickness  76                                              angstrom
+                                                                      
+PROCESS PARAMETERS             M3        M4    N_W      N\PLY     UNITS
+ Sheet Resistance             0.07      0.04    988      1034     ohms/sq
+ Contact Resistance           1.03      1.19                      ohms
+                                                       
+COMMENTS: N\POLY is N-well under polysilicon.
+
+
+CAPACITANCE PARAMETERS   N+    P+   POLY  POLY2  M1  M2  M3  M4  N_W    UNITS
+ Area (substrate)       895  1378   109          25  12   8   7   104   aF/um^2
+ Area (N+active)                   4547          35  17  12  10         aF/um^2
+ Area (P+active)                   4578                                 aF/um^2
+ Area (poly)                              890    48  15   9   7         aF/um^2
+ Area (poly2)                                    46                     aF/um^2
+ Area (metal1)                                       40  15   9         aF/um^2
+ Area (metal2)                                           42  13         aF/um^2
+ Area (metal3)                                               34         aF/um^2
+ Fringe (substrate)     277   347                52  28                 aF/um
+ Fringe (poly)                                   62  40  32  23         aF/um
+ Fringe (metal1)                                     56  33  30         aF/um
+ Fringe (metal2)                                                        aF/um
+ Fringe (metal3)                                             59         aF/um
+                                                                       
+
+
+CIRCUIT PARAMETERS                            UNITS      
+ Inverters                     K                         
+  Vinv                        1.0       1.23  volts      
+  Vinv                        1.5       1.37  volts      
+  Vol (100 uA)                2.0       0.20  volts      
+  Voh (100 uA)                2.0       2.94  volts      
+  Vinv                        2.0       1.47  volts      
+  Gain                        2.0     -17.17             
+ Ring Oscillator Freq.                                   
+  DIV256 (31-stg,3.3V)                190.33  MHz        
+  D256_THK  (31-stg,5.0V)             134.02  MHz        
+ Ring Oscillator Power                                   
+  DIV256 (31-stg,3.3V)                  0.15  uW/MHz/gate
+  D256_THK  (31-stg,5.0V)               0.30  uW/MHz/gate

@@ -1,0 +1,78 @@
+                                         
+                           MOSIS WAFER ACCEPTANCE TESTS
+                                          
+     RUN: T68Y (7RF_6LM_ML)                            VENDOR: IBM-BURLINGTON
+   TECHNOLOGY: SCN018                                FEATURE SIZE: 0.18 microns
+                                   Run type: SKD
+
+
+INTRODUCTION: This report contains the lot average results obtained by MOSIS
+              from measurements of MOSIS test structures on each wafer of
+              this fabrication lot. SPICE parameters obtained from similar
+              measurements on a selected wafer are also attached.
+
+COMMENTS: 7RF_IBM-BURLIN
+
+
+TRANSISTOR PARAMETERS     W/L       N-CHANNEL P-CHANNEL  UNITS
+                                                        
+ MINIMUM                  0.24/0.18                     
+  Vth                                    0.46     -0.43  volts
+                                                        
+ SHORT                    20.0/0.18                     
+  Idss                                 569      -282     uA/um
+  Vth                                    0.47     -0.44  volts
+  Vpt                                    4.5      -4.1   volts
+                                                        
+ WIDE                     20.0/0.18                     
+  Ids0                                 120.6    -167.8   pA/um
+                                                        
+ LARGE                    20.0/20.0                     
+  Vth                                    0.36     -0.42  volts
+  Vjbkd                                  3.8      -4.2   volts
+  Ijlk                                 <50.0     <50.0   pA
+                                                        
+ K' (Uo*Cox/2)                         153.3     -32.1   uA/V^2
+ Low-field Mobility                    390.68     81.81  cm^2/V*s
+                                                        
+
+
+PROCESS PARAMETERS     N+    P+      POLY    P+PLY    M1     M2   UNITS
+ Sheet Resistance       6.3   6.1    6.3    252.9    0.08   0.09  ohms/sq
+ Contact Resistance     7.5   7.4    6.9                    2.31  ohms
+ Gate Oxide Thickness  44                                         angstrom
+                                                                      
+PROCESS PARAMETERS   M3   M4   M5   N+BLK P+BLK  M6   RP   POLY_NON  TaN  UNITS
+ Sheet Resistance   0.09 0.10 0.10   67.2 105.2 0.01 163.7  1750.7   61.1 ohms/sq
+ Contact Resistance 4.41 6.53 8.69              8.70                      ohms
+                                                                            
+COMMENTS: BLK is silicide block.
+
+
+CAPACITANCE PARAMETERS    N+     P+    POLY    D_N_W    R_W     N_W     UNITS
+ Area (substrate)        809   1156              373             189    aF/um^2
+ Area (N+active)                      7809                              aF/um^2
+ Area (P+active)                      7426                              aF/um^2
+ Area (r well)           902                                            aF/um^2
+ Area (d well)                                          1326            aF/um^2
+ Fringe (substrate)      187    111                                     aF/um
+ Overlap (N+active)                    442                              aF/um
+ Overlap (P+active)                    525                              aF/um
+                                                                       
+
+
+CIRCUIT PARAMETERS                            UNITS      
+ Inverters                     K                         
+  Vinv                        1.0       0.77  volts      
+  Vinv                        1.5       0.82  volts      
+  Vol (100 uA)                2.0       0.01  volts      
+  Voh (100 uA)                2.0       1.78  volts      
+  Vinv                        2.0       0.86  volts      
+  Gain                        2.0     -16.92             
+ Ring Oscillator Freq.                                   
+  D1024_THK (31-stg,3.3V)             221.82  MHz        
+  DIV512 (31-stg,1.8V)                446.72  MHz        
+ Ring Oscillator Power                                   
+  D1024_THK (31-stg,3.3V)               0.08  uW/MHz/gate
+  DIV512 (31-stg,1.8V)                  0.02  uW/MHz/gate
+                                                         

@@ -1,0 +1,114 @@
+//  -----------------------------------------------------------------------
+simulator lang=spectre insensitive=yes
+//  OPA656 Wideband, Unity Gain Stable, FET-Input, VFB Op Amp
+//  created  12/27/01   RS
+//  Revision 1/16/02    RS Input saturation
+//  Rev      6/12/02    RS Adj for Trimed offset & Output Drive Current
+//  
+//  NOTES:
+//    1- Uses a multiple pole-zero topology
+//    2- For better convergence during transient analysis set:
+//         .OPTIONS  ITL4=40
+//    3- This macromodel predicts room temperature performance
+//       (T = 27 deg C) for: DC, small-signal AC, noise, and
+//       transient simulations
+//    4- This macromodel does not predict: distortion
+//       (harmonic, intermod, diff. gain & phase, ...),
+//       temperature effects, board parasitics, differences
+//       between package styles, and process changes
+//    5- Revision to correct Pinch-off and input limiting.
+// 
+//  |---------------------------------------------------------------|
+//  |  This macro model is being supplied as an aid to              |
+//  |  circuit designs.  While it reflects reasonably close         |
+//  |  similarity to the actual device in terms of performance,     |
+//  |  it is not suggested as a replacement for breadboarding.      |
+//  |  Simulation should be used as a forerunner or a supplement    |
+//  |  to traditional lab testing.                                  |
+//  |                                                               |
+//  |  Neither this library nor any part may be copied without      |
+//  |  the express written consent of Texas Instruments Corporation.|
+//  |---------------------------------------------------------------|
+// 
+//  CONNECTIONS:
+//               Non-Inverting Input         
+//               | Inverting Input
+//               | | Positive Power Supply
+//               | | |  Negative Power Supply
+//               | | |  |  Output
+//               | | |  |  |
+subckt opa656 ( p n vp vn out ) 
+c_c4 ( vn 0 ) capacitor c=1p
+c_c2 ( 0 vp ) capacitor c=1p
+r_r40 ( 16 0 ) resistor r=1M
+g_g40 ( 0 16  15 0 ) pvccs  coeffs=[0 1u 0 0 ]
+v_v12 ( 14 vn ) vsource dc=4.54 
+r_r51 ( vn 23 ) resistor r=9.0
+r_r50 ( 19 vp ) resistor r=5
+r_r30 ( 15 0 ) resistor r=87.92K
+d_d32 ( 18 16 ) dx area=1
+d_d31 ( 16 17 ) dx area=1
+c_c6 ( out 0 ) capacitor c=1p
+d_d12 ( 14 12 ) dx area=1
+r_r10 ( 10 vp ) resistor r=750
+r_r11 ( 11 vp ) resistor r=750
+q_q1 ( vp 20 out ) npn8 area=8
+q_q2 ( vn 22 out ) pnp8 area=8
+q_q4 ( 21 21 20 ) pnp8 area=.5
+q_q3 ( 21 21 22 ) npn8 area=.5
+c_c30 ( 0 15 ) capacitor c=10.54p
+c_c40 ( 16 0 ) capacitor c=0.079f
+e_e50 ( 19 20  0 16 vp vn ) pvcvs  coeffs=[-815m 1 0.5 ]
+e_e51 ( 22 23  16 0 vp vn ) pvcvs  coeffs=[-815m 1 0.5 ]
+e_e31 ( 17 0  vp vn ) pvcvs  coeffs=[-1.7 0.5 0 0 ]
+e_e32 ( 18 0  vn vp ) pvcvs  coeffs=[1.7 0.5 0 0 ]
+i_i12 ( 12 vn ) isource dc=9.8m 
+g_g1 ( 0 15  11 10 ) pvccs  coeffs=[0 25.225m 0 0 ]
+j_j10 ( 10 p 12 ) jx area=.5
+l_l2 ( 2 n ) inductor l=3.96n
+j_j11 ( 11 2 12 ) jx area=.50001505
+ends opa656
+// 
+model dn1 diode 
++ is=.1f                    af=1.0                    kf=49.0e-17
+model dx diode 
++ is=1.0000e-15             
+// 
+model npn8 bjt type=npn 
++ is=7.604e-18              bf=1.570e+02              nf=1.000e+00
++ vaf=7.871e+01             ikf=3.975e-02             ise=3.219e-14
++ ne=2.000e+00              br=7.614e-01              nr=1.000e+00
++ var=1.452e+00             ikr=8.172e-02             isc=7.618e-21
++ nc=1.847e+00              rb=1.060e+02              irb=0.000e+00
++ rbm=2.400e+00             re=2.520e+00              rc=1.270e+02
++ cje=1.120e-13             vje=7.591e-01             mje=5.406e-01
++ tf=1.213e-11              xtf=2.049e+00             vtf=1.813e+00
++ itf=4.293e-02             ptf=0.000e+00             cjc=8.208e-14
++ vjc=6.666e-01             mjc=4.509e-01             xcjc=8.450e-02
++ tr=4.000e-11              cjs=1.160e-13             vjs=5.286e-01
++ mjs=4.389e-01             xtb=1.022e+00             eg=1.120e+00
++ xti=1.780e+00             kf=3.500e-16              af=1.000e+00
++ fc=8.273e-01              
+// 
+model pnp8 bjt type=pnp 
++ is=7.999e-18              bf=1.418e+02              nf=1.000e+00
++ vaf=4.158e+01             ikf=1.085e-01             ise=2.233e-15
++ ne=1.505e+00              br=3.252e+01              nr=1.050e+00
++ var=1.093e+00             ikr=5.000e-05             isc=6.621e-16
++ nc=1.150e+00              rb=6.246e+01              irb=0.000e+00
++ rbm=2.240e+00             re=2.537e+00              rc=1.260e+02
++ cje=9.502e-14             vje=7.320e-01             mje=4.930e-01
++ tf=1.303e-11              xtf=3.500e+01             vtf=3.259e+00
++ itf=2.639e-01             ptf=0.000e+00             cjc=1.080e-13
++ vjc=7.743e-01             mjc=5.000e-01             xcjc=8.504e-02
++ tr=1.500e-10              cjs=1.290e-13             vjs=9.058e-01
++ mjs=4.931e-01             xtb=1.732e+00             eg=1.120e+00
++ xti=2.000e+00             kf=3.500e-16              af=1.000e+00
++ fc=8.500e-01              
+// 
+model jx jfet type=n 
++ beta=2.78e-3              lambda=28.67e-6           is=5.956e-15
++ alpha=2.7155              vk=1                      rd=13.3
++ rs=13.299                 cgd=1.032e-12             cgs=2.823e-12
++ af=1                      kf=21.75e-18              betatce=-1.994
++ vtotc=-2.5000e-3          

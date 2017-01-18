@@ -1,0 +1,173 @@
+//   Schematics Subcircuit *
+simulator lang=spectre insensitive=yes
+// ------------------------------------------------------------------------
+//  OPA657  Non-Unity Gain Stable, FET Voltage Limiting Amplifier
+//  REV. A - Created 1/21/02 Rea Schmid
+//  REV. B - Created 2/26/02 Rea Schmid - Purpose to adjust voltage and noise curves
+//  REV. C - Created 6/27/06 Xavier Ramus - to correct input stage oscillation
+//  REV. D - Created 10/23/06 Xavier Ramus - To correct Noise
+//  REV. E - Created 11/22/06 Xavier Ramus - To correct behavior in transimpedance 
+// applications
+// 
+// 
+//  NOTES:
+//    1- This macromodel predicts well: DC, small-signal AC,
+//       noise, and transient performance under a wide range
+//       of conditions
+//    2- This macromodel does not predict well: distortion
+//       (harmonic, intermod, diff. gain & phase, ...),
+//       temperature effects, board parasitics, differences
+//       between package styles, and process changes
+//   3 - Known Problems: - none
+// 
+//  |-------------------------------------------------------------|
+//  |  This macro model is being supplied as an aid to            |
+//  |  circuit designs.  While it reflects reasonably close       |
+//  |  similarity to the actual device in terms of performance,   |
+//  |  it is not suggested as a replacement for breadboarding.    |
+//  |  Simulation should be used as a forerunner or a supplement  |
+//  |  to traditional lab testing.                                |
+//  |                                                             |
+//  |  Neither this library nor any part may be copied without    |
+//  |  the express written consent of Texas Instruments Corp.     |
+//  |-------------------------------------------------------------|
+// 
+//  CONNECTIONS:
+//                         Non-Inverting Input
+//                         | Inverting Input
+//                         |  |  Output
+//                         |  |  |   Positive Supply
+//                         |  |  |   |   Negative Supply
+//                         |  |  |   |    | 
+//                         |  |  |   |    |  
+//                         |  |  |   |    |  
+subckt opa657 ( p n out vp vn ) 
+ 
+//   Removed parameters and replaced by hard coded values for
+//   eldo/spectre syntax-Nagendra
+//   
+//   .PARAM x2=0.25
+//   .PARAM x4=0.5
+//   .PARAM x8=1
+//   .PARAM x10={x2*5}
+//   .PARAM x16=2
+//   .PARAM x24=3
+//   .PARAM x64=8
+//   .PARAM xFET=3
+ 
+r_r13 ( n_0001 vp ) resistor r=520
+i_i2 ( n_0002 n_0003 ) isource dc=580u 
+r_r11 ( n_0004 vp ) resistor r=195
+r_r7 ( n_0006 n_0005 ) resistor r=4
+l_l2 ( out n_0005 ) inductor l=1n
+c_c7 ( n_0005 0 ) capacitor c=45p
+r_r5 ( vn n_0007 ) resistor r=100
+r_r6 ( vn n_0008 ) resistor r=100
+r_r12 ( vn n_0009 ) resistor r=150
+r_r14 ( vn n_0010 ) resistor r=520
+i_i1 ( n_0011 n_0012 ) isource dc=513.33u 
+r_r9 ( n_0014 n_0013 ) resistor r=22.5
+r_r10 ( n_0016 n_0015 ) resistor r=22.5
+i_i3 ( n_0017 n_0018 ) isource dc=722.3u 
+x_f7 ( n_0018 n_0019 n_0014 vn ) opa657schm_f7 
+x_f8 ( n_0019 vn n_0016 vn ) opa657schm_f8 
+x_f10 ( n_0020 n_0017 vp n_0021 ) opa657schm_f10 
+x_f9 ( vp n_0020 vp n_0022 ) opa657schm_f9 
+q_q5 ( n_0024 n_0023 n_0025 ) pnp8 area=1 m=8
+q_q9 ( n_0011 n_0011 n_0026 ) pnp8 area=0.25
+q_q14 ( n_0023 n_0027 n_0028 ) npn8 area=0.5
+q_q12 ( n_0029 n_0029 n_0027 ) npn8 area=0.5
+q_q11 ( n_0023 n_0011 n_0030 ) pnp8 area=0.5
+q_q10 ( n_0029 n_0011 n_0031 ) pnp8 area=0.5
+q_q3 ( vp n_0031 n_0032 ) npn8 area=1 m=3
+q_q7 ( vp n_0025 n_0006 ) npn8 area=1 m=16
+q_q19 ( n_0002 n_0002 n_0001 ) pnp8 area=0.25
+q_q21 ( n_0003 n_0003 n_0010 ) npn8 area=0.25
+q_q13 ( n_0028 n_0028 n_0008 ) npn8 area=0.25 m=5
+q_q15 ( n_0027 n_0028 n_0007 ) npn8 area=0.25 m=5
+q_q6 ( n_0032 n_0023 n_0033 ) npn8 area=1.2 m=8
+q_q20 ( n_0033 n_0003 n_0009 ) npn8 area=0.125 m=8
+q_q18 ( n_0025 n_0002 n_0004 ) pnp8 area=0.25 m=2
+q_q4 ( vn n_0007 n_0024 ) pnp8 area=1 m=3
+q_q22 ( vn n_0033 n_0006 ) pnp8 area=1 m=40
+x_f1 ( n_0012 vn n_0034 vn ) opa657schm_f1 
+j_j29 ( n_0021 p n_0013 ) jx6_3 area=3
+j_j30 ( n_0022 n n_0015 ) jx6_3 area=3
+r_r3 ( n_0031 vp ) resistor r=600
+r_r4 ( n_0030 vp ) resistor r=600
+r_r8 ( n_0026 vp ) resistor r=2.8K
+q_q24 ( vn n_0016 n_0022 ) pnp8 area=1
+q_q2 ( n_0030 n_0016 n_0034 ) npn8 area=1 m=2
+q_q1 ( n_0031 n_0014 n_0034 ) npn8 area=1 m=2
+q_q23 ( vn n_0014 n_0021 ) pnp8 area=1
+c_c6 ( vn n_0023 ) capacitor c=1.1p
+ 
+model npn8 bjt type=npn 
++ is=7.604e-18              bf=1.570e+02              nf=1.000e+00
++ vaf=7.871e+01             ikf=3.975e-02             ise=3.219e-14
++ ne=2.000e+00              br=7.614e-01              nr=1.000e+00
++ var=1.452e+00             ikr=8.172e-02             isc=7.618e-21
++ nc=1.847e+00              rb=1.060e+02              irb=0.000e+00
++ rbm=2.400e+00             re=2.520e+00              rc=1.270e+02
++ cje=1.120e-13             vje=7.591e-01             mje=5.406e-01
++ tf=1.213e-11              xtf=2.049e+00             vtf=1.813e+00
++ itf=4.293e-02             ptf=0.000e+00             cjc=8.208e-14
++ vjc=6.666e-01             mjc=4.509e-01             xcjc=8.450e-02
++ tr=4.000e-11              cjs=1.160e-13             vjs=5.286e-01
++ mjs=4.389e-01             xtb=1.022e+00             eg=1.120e+00
++ xti=1.780e+00             kf=3.500e-16              af=1.000e+00
++ fc=8.273e-01              
+ 
+ 
+model pnp8 bjt type=pnp 
++ is=7.999e-18              bf=1.418e+02              nf=1.000e+00
++ vaf=4.158e+01             ikf=1.085e-01             ise=2.233e-15
++ ne=1.505e+00              br=3.252e+01              nr=1.050e+00
++ var=1.093e+00             ikr=5.000e-05             isc=6.621e-16
++ nc=1.150e+00              rb=6.246e+01              irb=0.000e+00
++ rbm=2.240e+00             re=2.537e+00              rc=1.260e+02
++ cje=9.502e-14             vje=7.320e-01             mje=4.930e-01
++ tf=1.303e-11              xtf=3.500e+01             vtf=3.259e+00
++ itf=2.639e-01             ptf=0.000e+00             cjc=1.080e-13
++ vjc=7.743e-01             mjc=5.000e-01             xcjc=8.504e-02
++ tr=1.500e-10              cjs=1.290e-13             vjs=9.058e-01
++ mjs=4.931e-01             xtb=1.732e+00             eg=1.120e+00
++ xti=2.000e+00             kf=3.500e-16              af=1.000e+00
++ fc=8.500e-01              
+ 
+model jx6_3 jfet type=n 
++ beta=0.35e-3              rd=13.3                   rs=13.299
++ betatce=-1.994            lambda=28.67e-9           isr=0
++ nr=2                      is=5.956e-15              n=1
++ xti=3                     alpha=2.7155e-9           vk=1
++ cgd=2.025e-12             m=0.57                    pb=1
++ fc=0.5                    cgs=11.7e-13              af=1
++ kf=0                      vtotc=0.0025              vto=-2.85
+ 
+ 
+ends opa657
+ 
+subckt opa657schm_f7 ( 1 2 3 4 ) 
+f_f7 ( 3 4 ) cccs probe=vf_f7 gain=1.00165517241
+vf_f7 ( 1 2 ) vsource dc=0 
+ends opa657schm_f7
+ 
+subckt opa657schm_f8 ( 1 2 3 4 ) 
+f_f8 ( 3 4 ) cccs probe=vf_f8 gain=1.00165517241
+vf_f8 ( 1 2 ) vsource dc=0 
+ends opa657schm_f8
+ 
+subckt opa657schm_f10 ( 1 2 3 4 ) 
+f_f10 ( 3 4 ) cccs probe=vf_f10 gain=1.33600996816
+vf_f10 ( 1 2 ) vsource dc=0 
+ends opa657schm_f10
+ 
+subckt opa657schm_f9 ( 1 2 3 4 ) 
+f_f9 ( 3 4 ) cccs probe=vf_f9 gain=1.33600996816
+vf_f9 ( 1 2 ) vsource dc=0 
+ends opa657schm_f9
+ 
+subckt opa657schm_f1 ( 1 2 3 4 ) 
+f_f1 ( 3 4 ) cccs probe=vf_f1 gain=4
+vf_f1 ( 1 2 ) vsource dc=0 
+ends opa657schm_f1

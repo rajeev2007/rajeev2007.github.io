@@ -1,0 +1,88 @@
+// DATE: Aug 14/06
+// LOT: T65U                  WAF: 1004
+// Temperature_parameters=Default
+simulator lang=spectre insensitive=yes
+
+model n_18_mm bsim3v3 type=n
++version = 3.1            tnom    = 27             tox     = 3.2e-9
++xj      = 1e-7           nch     = 2.3549e17      vth0    = 0.0568751
++k1      = 0.3020081      k2      = -0.0126353     k3      = 1e-3
++k3b     = 4.0207582      w0      = 1e-7           nlx     = 1e-6
++dvt0w   = 0              dvt1w   = 0              dvt2w   = 0
++dvt0    = 1.0831955      dvt1    = 0.1843614      dvt2    = 0.2748043
++u0      = 434.7091169    ua      = -5.43709e-10   ub      = 3.701463e-18
++uc      = 4.393831e-10   vsat    = 1.628587e5     a0      = 1.7574452
++ags     = 0.9073285      b0      = 6.50197e-6     b1      = 5e-6
++keta    = 0.0191837      a1      = 8.559091e-4    a2      = 0.3645109
++rdsw    = 150            prwg    = 0.3557617      prwb    = 0.1071626
++wr      = 1              wint    = 1.783755e-8    lint    = 1.034003e-8
++dwg     = -3.45492e-10   dwb     = 1.327182e-8    voff    = -0.0378384
++nfactor = 2.5            cit     = 0              cdsc    = 2.4e-4
++cdscd   = 0              cdscb   = 0              eta0    = 1.001562e-3
++etab    = 0.5140021      dsub    = 4.098585e-6    pclm    = 0.9707588
++pdiblc1 = 0.9980936      pdiblc2 = 0.01           pdiblcb = 0.1
++drout   = 0.999035       pscbe1  = 7.973198e10    pscbe2  = 5.003614e-10
++pvag    = 0.49933        delta   = 0.01           rsh     = 6.9
++mobmod  = 1              prt     = 0              ute     = -1.5
++kt1     = -0.11          kt1l    = 0              kt2     = 0.022
++ua1     = 4.31e-9        ub1     = -7.61e-18      uc1     = -5.6e-11
++at      = 3.3e4          wl      = 0              wln     = 1
++ww      = 0              wwn     = 1              wwl     = 0
++ll      = 0              lln     = 1              lw      = 0
++lwn     = 1              lwl     = 0              capmod  = 2
++xpart   = 0.5            cgdo    = 4.04e-10       cgso    = 4.04e-10
++cgbo    = 1e-10          cj      = 8.395926e-4    pb      = 0.8452447
++mj      = 0.5347241      cjsw    = 2.43093e-10    pbsw    = 0.8
++mjsw    = 0.2862576      cjswg   = 3.3e-10        pbswg   = 0.8
++mjswg   = 0.2862576      cf      = 0              pvth0   = 2.009264e-4
++prdsw   = 0              pk2     = 1.30501e-3     wketa   = -1.227146e-3
++lketa   = 6.04383e-3     pu0     = 4.4729531      pua     = 1.66833e-11
++pub     = 0              pvsat   = 653.2294237    peta0   = 1e-4
++pketa   = -0.0204684      
++noimod=2.0e+00		noia=1.3182567385564e+19
++noib=144543.977074592 noic=-1.24515784572817e-12	ef=0.92 em=41000000 
+//
+// flicker noise parameters above added manually from some other process
+// 
+model p_18_mm bsim3v3 type=p
++version = 3.1            tnom    = 27             tox     = 3.2e-9
++xj      = 1e-7           nch     = 4.1589e17      vth0    = -0.2184693
++k1      = 0.251043       k2      = 0.0107986      k3      = 0.0939299
++k3b     = 14.287779      w0      = 1e-6           nlx     = 2.83073e-7
++dvt0w   = 0              dvt1w   = 0              dvt2w   = 0
++dvt0    = 8.124641e-4    dvt1    = 0.4664019      dvt2    = 0.1
++u0      = 111.8794007    ua      = 1.325562e-9    ub      = 3.221853e-21
++uc      = -1.73309e-11   vsat    = 1.998045e5     a0      = 2
++ags     = 0.7381126      b0      = 6.526983e-6    b1      = 5e-6
++keta    = 0.0167193      a1      = 1.316147e-3    a2      = 0.4631991
++rdsw    = 106.4080613    prwg    = -0.4993469     prwb    = 0.5
++wr      = 1              wint    = 0              lint    = 7.66174e-9
++dwg     = 4.097251e-9    dwb     = -3.051451e-9   voff    = -0.1022829
++nfactor = 1.5332272      cit     = 0              cdsc    = 2.4e-4
++cdscd   = 0              cdscb   = 0              eta0    = 7.088326e-3
++etab    = -3.405323e-3   dsub    = 1.642777e-3    pclm    = 0.1688598
++pdiblc1 = 1.428801e-3    pdiblc2 = -9.415836e-6   pdiblcb = -1e-3
++drout   = 3.682163e-6    pscbe1  = 5.118004e9     pscbe2  = 1.563874e-9
++pvag    = 0.0183422      delta   = 0.01           rsh     = 6.9
++mobmod  = 1              prt     = 0              ute     = -1.5
++kt1     = -0.11          kt1l    = 0              kt2     = 0.022
++ua1     = 4.31e-9        ub1     = -7.61e-18      uc1     = -5.6e-11
++at      = 3.3e4          wl      = 0              wln     = 1
++ww      = 0              wwn     = 1              wwl     = 0
++ll      = 0              lln     = 1              lw      = 0
++lwn     = 1              lwl     = 0              capmod  = 2
++xpart   = 0.5            cgdo    = 3.88e-10       cgso    = 3.88e-10
++cgbo    = 1e-10          cj      = 1.174219e-3    pb      = 0.824378
++mj      = 0.4102315      cjsw    = 1.318145e-10   pbsw    = 0.8340772
++mjsw    = 0.1            cjswg   = 4.22e-10       pbswg   = 0.8340772
++mjswg   = 0.1            cf      = 0              pvth0   = 5.093002e-5
++prdsw   = 56.1585333     pk2     = 2.616923e-3    wketa   = 0.0353839
++lketa   = 0.0163711      pu0     = -1.0463987     pua     = -5.37814e-11
++pub     = 1.543904e-23   pvsat   = -50            peta0   = 1e-4
++pketa   = -4.815139e-3    
++noimod=2.0e+00		noia=3.57456993317604e+18		noib=2500
++noic=2.61260020285845e-11	ef=1.1388				em=41000000 
+// 
+// flicker noise parameters above added manually from some other process
+// 
+

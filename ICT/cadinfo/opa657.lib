@@ -1,0 +1,159 @@
+* Schematics Subcircuit *
+*------------------------------------------------------------------------
+* OPA657  Non-Unity Gain Stable, FET Voltage Limiting Amplifier
+* REV. A - Created 1/21/02 Rea Schmid
+* REV. B - Created 2/26/02 Rea Schmid - Purpose to adjust voltage and noise curves
+* REV. C - Created 6/27/06 Xavier Ramus - to correct input stage oscillation
+* REV. D - Created 10/23/06 Xavier Ramus - To correct Noise
+* REV. E - Created 11/22/06 Xavier Ramus - To correct behavior in transimpedance applications
+*
+*
+* NOTES:
+*   1- This macromodel predicts well: DC, small-signal AC,
+*      noise, and transient performance under a wide range
+*      of conditions
+*   2- This macromodel does not predict well: distortion
+*      (harmonic, intermod, diff. gain & phase, ...),
+*      temperature effects, board parasitics, differences
+*      between package styles, and process changes
+*  3 - Known Problems: - none
+*
+* |-------------------------------------------------------------|
+* |  This macro model is being supplied as an aid to            |
+* |  circuit designs.  While it reflects reasonably close       |
+* |  similarity to the actual device in terms of performance,   |
+* |  it is not suggested as a replacement for breadboarding.    |
+* |  Simulation should be used as a forerunner or a supplement  |
+* |  to traditional lab testing.                                |
+* |                                                             |
+* |  Neither this library nor any part may be copied without    |
+* |  the express written consent of Texas Instruments Corp.     |
+* |-------------------------------------------------------------|
+*
+* CONNECTIONS:
+*                        Non-Inverting Input
+*                        | Inverting Input
+*                        |  |  Output
+*                        |  |  |   Positive Supply
+*                        |  |  |   |   Negative Supply
+*                        |  |  |   |    | 
+*                        |  |  |   |    |  
+*                        |  |  |   |    |  
+.SUBCKT OPA657 p n Out Vp Vn
+
+** Removed parameters and replaced by hard coded values for
+** eldo/spectre syntax-Nagendra
+** 
+** .PARAM x2=0.25
+** .PARAM x4=0.5
+** .PARAM x8=1
+** .PARAM x10={x2*5}
+** .PARAM x16=2
+** .PARAM x24=3
+** .PARAM x64=8
+** .PARAM xFET=3
+ 
+R_R13         N_0001 Vp  520  
+I_I2         N_0002 N_0003 DC 580u  
+R_R11         N_0004 Vp  195  
+R_R7         N_0006 N_0005  4  
+L_L2         Out N_0005  1nH  
+C_C7         N_0005 0  45p  
+R_R5         Vn N_0007  100  
+R_R6         Vn N_0008  100  
+R_R12         Vn N_0009  150  
+R_R14         Vn N_0010  520  
+I_I1         N_0011 N_0012 DC 513.33uA  
+R_R9         N_0014 N_0013  22.5  
+R_R10         N_0016 N_0015  22.5  
+I_I3         N_0017 N_0018 DC 722.3u  
+X_F7    N_0018 N_0019 N_0014 Vn OPA657schm_F7 
+X_F8    N_0019 Vn N_0016 Vn OPA657schm_F8 
+X_F10    N_0020 N_0017 Vp N_0021 OPA657schm_F10 
+X_F9    Vp N_0020 Vp N_0022 OPA657schm_F9 
+Q_Q5         N_0024 N_0023 N_0025 PNP8 area=1 m=8
+Q_Q9         N_0011 N_0011 N_0026 PNP8 area=0.25
+Q_Q14         N_0023 N_0027 N_0028 NPN8 area=0.5
+Q_Q12         N_0029 N_0029 N_0027 NPN8 area=0.5
+Q_Q11         N_0023 N_0011 N_0030 PNP8 area=0.5
+Q_Q10         N_0029 N_0011 N_0031 PNP8 area=0.5
+Q_Q3         Vp N_0031 N_0032 NPN8 area=1 m=3
+Q_Q7         Vp N_0025 N_0006 NPN8 area=1 m=16
+Q_Q19         N_0002 N_0002 N_0001 PNP8 area=0.25
+Q_Q21         N_0003 N_0003 N_0010 NPN8 area=0.25
+Q_Q13         N_0028 N_0028 N_0008 NPN8 area=0.25 m=5
+Q_Q15         N_0027 N_0028 N_0007 NPN8 area=0.25 m=5
+Q_Q6         N_0032 N_0023 N_0033 NPN8 area=1.2 m=8
+Q_Q20         N_0033 N_0003 N_0009 NPN8 area=0.125 m=8
+Q_Q18         N_0025 N_0002 N_0004 PNP8 area=0.25 m=2
+Q_Q4         Vn N_0007 N_0024 PNP8 area=1 m=3
+Q_Q22         Vn N_0033 N_0006 PNP8 area=1 m=40
+X_F1    N_0012 Vn N_0034 Vn OPA657schm_F1 
+J_J29         N_0021 p N_0013 JX6_3 area=3
+J_J30         N_0022 n N_0015 JX6_3 area=3
+R_R3         N_0031 Vp  600  
+R_R4         N_0030 Vp  600  
+R_R8         N_0026 Vp  2.8k  
+Q_Q24         Vn N_0016 N_0022 PNP8 1
+Q_Q2         N_0030 N_0016 N_0034 NPN8 area=1 m=2
+Q_Q1         N_0031 N_0014 N_0034 NPN8 area=1 m=2
+Q_Q23         Vn N_0014 N_0021 PNP8 1
+C_C6         Vn N_0023  1.1p  
+
+.MODEL NPN8 NPN
++ IS = 7.604E-18 BF = 1.570E+02 NF = 1.000E+00 VAF= 7.871E+01
++ IKF= 3.975E-02 ISE= 3.219E-14 NE = 2.000E+00 BR = 7.614E-01
++ NR = 1.000E+00 VAR= 1.452E+00 IKR= 8.172E-02 ISC= 7.618E-21
++ NC = 1.847E+00 RB = 1.060E+02 IRB= 0.000E+00 RBM= 2.400E+00
++ RE = 2.520E+00 RC = 1.270E+02 CJE= 1.120E-13 VJE= 7.591E-01
++ MJE= 5.406E-01 TF = 1.213E-11 XTF= 2.049E+00 VTF= 1.813E+00
++ ITF= 4.293E-02 PTF= 0.000E+00 CJC= 8.208E-14 VJC= 6.666E-01
++ MJC= 4.509E-01 XCJC=8.450E-02 TR = 4.000E-11 CJS= 1.160E-13
++ VJS= 5.286E-01 MJS= 4.389E-01 XTB= 1.022E+00 EG = 1.120E+00
++ XTI= 1.780E+00 KF = 3.500E-16 AF = 1.000E+00 FC = 8.273E-01
+
+
+.MODEL PNP8 PNP
++ IS = 7.999E-18 BF = 1.418E+02 NF = 1.000E+00 VAF= 4.158E+01
++ IKF= 1.085E-01 ISE= 2.233E-15 NE = 1.505E+00 BR = 3.252E+01
++ NR = 1.050E+00 VAR= 1.093E+00 IKR= 5.000E-05 ISC= 6.621E-16
++ NC = 1.150E+00 RB = 6.246E+01 IRB= 0.000E+00 RBM= 2.240E+00
++ RE = 2.537E+00 RC = 1.260E+02 CJE= 9.502E-14 VJE= 7.320E-01
++ MJE= 4.930E-01 TF = 1.303E-11 XTF= 3.500E+01 VTF= 3.259E+00
++ ITF= 2.639E-01 PTF= 0.000E+00 CJC= 1.080E-13 VJC= 7.743E-01
++ MJC= 5.000E-01 XCJC=8.504E-02 TR = 1.500E-10 CJS= 1.290E-13
++ VJS= 9.058E-01 MJS= 4.931E-01 XTB= 1.732E+00 EG = 1.120E+00
++ XTI= 2.000E+00 KF = 3.500E-16 AF = 1.000E+00 FC = 8.500E-01
+
+.MODEL JX6_3 NJF
++ BETA=0.35e-3  RD=13.3  RS=13.299  BETATCE=-1.994 LAMBDA=28.67E-9  ISR=0  NR=2  IS=5.956E-15  N=1 XTI=3
++ ALPHA=2.7155E-9  VK=1 CGD=2.025E-12  M=0.57 PB=1 FC=0.5 CGS=11.7E-13 AF=1 KF=0
++ VTOTC=0.0025 VTO=-2.85
+
+
+.ENDS    OPA657
+
+.subckt OPA657schm_F7 1 2 3 4  
+F_F7         3 4 VF_F7 1.00165517241
+VF_F7         1 2 0V
+.ends OPA657schm_F7
+
+.subckt OPA657schm_F8 1 2 3 4  
+F_F8         3 4 VF_F8 1.00165517241
+VF_F8         1 2 0V
+.ends OPA657schm_F8
+
+.subckt OPA657schm_F10 1 2 3 4  
+F_F10         3 4 VF_F10 1.33600996816
+VF_F10         1 2 0V
+.ends OPA657schm_F10
+
+.subckt OPA657schm_F9 1 2 3 4  
+F_F9         3 4 VF_F9 1.33600996816
+VF_F9         1 2 0V
+.ends OPA657schm_F9
+
+.subckt OPA657schm_F1 1 2 3 4  
+F_F1         3 4 VF_F1 4
+VF_F1         1 2 0V
+.ends OPA657schm_F1

@@ -1,0 +1,105 @@
+                                         
+                           MOSIS WAFER ACCEPTANCE TESTS
+                                         
+          RUN: T68B (MM_NON-EPI)                            VENDOR: TSMC
+   TECHNOLOGY: SCN018                                FEATURE SIZE: 0.18 microns
+                                  Run type: SKD
+
+
+INTRODUCTION: This report contains the lot average results obtained by MOSIS
+              from measurements of MOSIS test structures on each wafer of
+              this fabrication lot. SPICE parameters obtained from similar
+              measurements on a selected wafer are also attached.
+
+COMMENTS: DSCN6M018_TSMC
+
+
+TRANSISTOR PARAMETERS     W/L       N-CHANNEL P-CHANNEL  UNITS
+                                                        
+ MINIMUM                  0.27/0.18                     
+  Vth                                    0.50     -0.51  volts
+                                                        
+ SHORT                    20.0/0.18                     
+  Idss                                 547      -250     uA/um
+  Vth                                    0.51     -0.51  volts
+  Vpt                                    4.8      -5.6   volts
+                                                        
+ WIDE                     20.0/0.18                     
+  Ids0                                  14.4      -4.7   pA/um
+                                                        
+ LARGE                    50/50                         
+  Vth                                    0.43     -0.42  volts
+  Vjbkd                                  3.1      -4.3   volts
+  Ijlk                                 <50.0     <50.0   pA
+                                                        
+ K' (Uo*Cox/2)                         175.4     -35.6   uA/V^2
+ Low-field Mobility                    416.52     84.54  cm^2/V*s
+                                                        
+COMMENTS: Poly bias varies with design technology. To account for mask
+           bias use the appropriate value for the parameters XL and XW
+           in your SPICE model card.
+                       Design Technology                   XL (um)  XW (um)
+                       -----------------                   -------  ------
+                       SCN6M_DEEP (lambda=0.09)             0.00    -0.01
+                                     thick oxide            0.00    -0.01
+                       SCN6M_SUBM (lambda=0.10)            -0.02     0.00
+                                     thick oxide           -0.02     0.00
+
+
+FOX TRANSISTORS           GATE      N+ACTIVE  P+ACTIVE  UNITS
+ Vth                      Poly         >6.6     <-6.6   volts
+
+
+
+PROCESS PARAMETERS     N+    P+     POLY  N+BLK  PLY+BLK   M1     M2   UNITS
+ Sheet Resistance       6.7   7.8   8.0    59.7   313.6   0.08   0.08  ohms/sq
+ Contact Resistance    10.6  11.0  10.0                          4.79  ohms
+ Gate Oxide Thickness  41                                              angstrom
+                                                                      
+PROCESS PARAMETERS     M3   POLY_HRI     M4      M5       M6    N_W     UNITS
+ Sheet Resistance     0.08              0.08    0.08     0.03    930    ohms/sq
+ Contact Resistance   9.24             14.05   18.39    20.69           ohms
+                                                                       
+COMMENTS: BLK is silicide block.
+
+
+CAPACITANCE PARAMETERS  N+   P+  POLY M1 M2 M3 M4 M5 M6 R_W  D_N_W M5P N_W  UNITS
+ Area (substrate)      942 1163  106  34 14  9  6  5  3        123      125 aF/um^2
+ Area (N+active)                8484  55 20 13 11  9  8                     aF/um^2
+ Area (P+active)                8232                                        aF/um^2
+ Area (poly)                          66 17 10  7  5  4                     aF/um^2
+ Area (metal1)                           37 14  9  6  5                     aF/um^2
+ Area (metal2)                              35 14  9  6                     aF/um^2
+ Area (metal3)                                 37 14  9                     aF/um^2
+ Area (metal4)                                    36 14                     aF/um^2
+ Area (metal5)                                       34            984      aF/um^2
+ Area (r well)         920                                                  aF/um^2
+ Area (d well)                                           582                aF/um^2
+ Area (no well)        137                                                  aF/um^2
+ Fringe (substrate)    212  235       41 35 29 21 14                        aF/um
+ Fringe (poly)                        70 39 29 23 20 17                     aF/um
+ Fringe (metal1)                         52 34    22 19                     aF/um
+ Fringe (metal2)                            48 35 27 22                     aF/um
+ Fringe (metal3)                               53 34 27                     aF/um
+ Fringe (metal4)                                  58 35                     aF/um
+ Fringe (metal5)                                     55                     aF/um
+ Overlap (N+active)              895                                        aF/um
+ Overlap (P+active)              737                                        aF/um
+                                                                           
+
+
+CIRCUIT PARAMETERS                            UNITS      
+ Inverters                     K                         
+  Vinv                        1.0       0.74  volts      
+  Vinv                        1.5       0.78  volts      
+  Vol (100 uA)                2.0       0.08  volts      
+  Voh (100 uA)                2.0       1.63  volts      
+  Vinv                        2.0       0.82  volts      
+  Gain                        2.0     -23.72             
+ Ring Oscillator Freq.                                   
+  D1024_THK (31-stg,3.3V)             300.36  MHz        
+  DIV1024 (31-stg,1.8V)               363.77  MHz        
+ Ring Oscillator Power                                   
+  D1024_THK (31-stg,3.3V)               0.07  uW/MHz/gate
+  DIV1024 (31-stg,1.8V)                 0.02  uW/MHz/gate
+                                                         
