@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd"><html lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<title>CAD-LAB=ECE</title>
+<STYLE type="text/css">
+body {
+    FONT-FAMILY: Arial;
+}
+A.barwhite {
+	COLOR: #ffffff; TEXT-DECORATION: none;
+}
+A.barwhite:hover {
+	COLOR: #ffffff; BACKGROUND-COLOR: #CCCC99;
+}
+A.barwhite:visited {
+	COLOR: #F89E58;
+}
+h1.main {
+	color:#A52A2A; font-size:1.2em;
+}
+tr.arrow {
+	background-color:#000000;
+}
+img.noborder {
+	border:0;
+}
+td.warn { background-color:#FF0000; }
+td.excl { background-color:#00FF00; }
+
+#tab1, #tab2 {
+	border-collapse: collapse;
+}
+
+#tab1 td, #tab2 td, #tab1 th, #tab2 th {
+	border: 1px solid #A52A2A;
+	padding: 7px;
+}
+
+#tab2 td { height:40px; }
+
+#tab1 th, #tab2 th {
+	background-color: #A52A2A;
+	color: #ffffff;
+	font-size: 1em;
+	padding: 7px;
+}
+
+#tab1 th.date, #tab2 th.date { width:100px; text-align:center; }
+td.num, #tab1 th.num, #tab2 th.num { width:80px; text-align:center; }
+#tab1 th.details, #tab2 th.details { width:500px; text-align:left; }
+#tab1 th.ref, #tab2 th.ref {width:100px; text-align:left; }
+#tab1 th.Manual, #tab2 th.Manual {width:130px; text-align:Center; }
+#tab1 th.sno, #tab2 th.sno {width:30px; text-align:center; }
+#tab1 th.auth, #tab2 th.auth {width:250px; text-align:left; }
+#tab1 th.title, #tab2 th.title {width:250px; text-align:left; }
+#tab1 th.pub, #tab2 th.pub {width:250px; text-align:left; }
+#tab1 th.year, #tab2 th.year {width:50px; text-align:center; }
+#tab1 th.Download, #tab2 th.Download {width:150px; text-align:center; }
+#tab1 th.Item, #tab2 th.Item {width:150px; text-align:center; }
+#tab1 tr.alt td, #tab2 tr.alt td {
+	color: #000000;
+	background-color: #D3D2D1;
+}
+#tab1 td, #tab2 td { text-align:center; }
+#tab1 td.lf, #tab2 td.lf { text-align:left; }
+</STYLE>
+
+<link href="rss.xml" rel="alternate" type="application/rss+xml" title="Sitewide RSS Feed">
+<link rel="main" href="../index.html" title="Main Page">
+<link rel="homepage" href="../index.html" title="Rajeev Home Page">
+
+</head>
+<body style="background-color:#ffffff">
+
+<!-- The heading -->
+<table width="100%" cellpadding="5" cellspacing="0">
+<tr style="background-color:#A52A2A">
+<td style="width:150px"><a href="../Teaching.html"><img src="../pics/logo.png" style="width:180px; height:82px"
+	class="noborder" alt="Go to Rajeev Pandey homepage"></a></td>
+<td>&nbsp;<span style="font-size:2em;color:#ffffff">Model File</span>
+<br>&nbsp;<span style="font-size:1.2em;color:#ffffff">Logic Gate
+</span>
+</td></tr>
+<!-- End of the heading -->
+
+<!-- Table that includes the main content -->
+
+<tr>
+<td style="background-color:#c1c1c1; width:150px"></td>
+
+<td valign="top" rowspan="2" background="../images/backg-ConvertImage.jpg">
+
+<!--Main Content Here -->
+
+<!-- include jQuery library -->
+<table>
+<h1>Model files</h1>
+    	<h3>MOS models</h3>
+		<p>These are sample models obtained from public
+		domain data such as parametric run results published on MOSIS's
+		website. These are provided so that students can get a feel for
+		performance of circuits in various technologies. <i>Do not</i> use
+		these to simulate circuits that are to be fabricated-get the models
+		for your process from the fabrication foundry. Click on the process name for more information</p>
+		
+		<p> 
+		For realistic modeling of circuits, include the drain and source
+		junction capacitances by specifying appropriate values of "ad", "as",
+		"pd", "ps" for all MOS transistors. In absence of layout information,
+		you can use 2L<sub>min</sub> to be junction length(i.e. 0.36um
+		in a 0.18um technology) and set <u>ad = as =
+		2WL<sub>min</sub></u> and
+		<u>pd = ps = 2(W+2L<sub>min</sub></u>).</p>
+		<ul>		
+		  <li> <a href="cadinfo/tsmc035_info.txt">TSMC 0.35um CMOS</a>, V<sub>dd</sub>=3.3V, W<sub>min</sub>=0.6um, L<sub>min</sub>=0.4um: Models for <a href="cadinfo/tsmc035.scs">Spectre</a>, <a href="cadinfo/tsmc035.lib">Eldo and others</a>
+		  </li><li> <a href="cadinfo/tsmc025_info.txt">TSMC 0.25um CMOS</a>, V<sub>dd</sub>=2.5V, W<sub>min</sub>=0.36um, L<sub>min</sub>=0.24um: Models for <a href="cadinfo/tsmc025.scs">Spectre</a>, <a href="cadinfo/tsmc025.lib">Eldo and others</a> 
+		  </li><li> <a href="cadinfo/tsmc018_info.txt">TSMC 0.18um CMOS</a>, V<sub>dd</sub>=1.8V, W<sub>min</sub>=0.27um, L<sub>min</sub>=0.18um: Models for <a href="cadinfo/tsmc018.scs">Spectre</a>, <a href="cadinfo/tsmc018.lib">Eldo and others</a>; <u>[Use this for all assignments unless mentioned otherwise]</u>.
+		  </li><li> <a href="cadinfo/ibm018_info.txt">IBM 0.18um CMOS</a>, V<sub>dd</sub>=1.8V, W<sub>min</sub>=0.24um, L<sub>min</sub>=0.18um: Model file for <a href="cadinfo/ibm018.scs">Spectre</a>, <a href="cadinfo/tsmc018.lib">Eldo and others</a>; 
+		  </li><li> <a href="cadinfo/ibm013_info.txt">IBM 0.13um CMOS</a>, V<sub>dd</sub>=1.2V, W<sub>min</sub>=0.16um, L<sub>min</sub>=0.12um: Model file for <a href="cadinfo/ibm013.scs">Spectre</a>, <a href="cadinfo/tsmc018.lib">Eldo and others</a>; 
+		  </li><li> Ideal diode, NPN, and PNP transistors: Models for <a href="cadinfo/ideal_diode.scs">Spectre</a>, <a href="cadinfo/ideal_diode.lib">Eldo and others</a>.
+		  </li><li> 2N2222(NPN) and 2N2907(PNP): Models for <a href="cadinfo/bjtmodels.scs">Spectre</a>, <a href="cadinfo/bjtmodels.lib">Eldo and others</a>.
+		 </li></ul>
+		 <p> Add the following line to your netlist to use these models with Eldo<br>
+		  .option compat<br>
+		  </p>
+		
+		<h3>Opamp models</h3>
+		<p>
+		Use these models only with +/-5V supply. Because of the way theyy are modeled, the gain, and more crucially, the unity gain frequency is very sensitive to the supply voltage. At +/-6V, the dc gain and unity gain frequency are more than 3x higher than at +/-5V.</p>
+		<ul>
+		  <li> <a href="cadinfo/opa656.pdf">OPA656-230MHz gain bandwidth operational amplifier</a>: Models for <a href="cadinfo/opa656.scs">Spectre</a>, <a href="cadinfo/opa656.lib">Eldo and others</a>.<br> 
+		  </li><li> <a href="cadinfo/opa657.pdf">OPA657-1600MHz gain bandwidth operational amplifier</a>: Models for <a href="cadinfo/opa657.scs">Spectre</a>, <a href="cadinfo/opa657.lib">Eldo and others</a>. (OPA657 is not unity gain stable)<br>
+		</li></ul>
+
+		<h2><a name="systemsim">System level simulators</a></h2>
+		<ul>
+		<li> <b>Matlab</b>, <b><a href="http://www.scilab.org/">Scilab</a></b>,
+		or <b><a href="http://www.gnu.org/software/octave/">Octave</a></b> can
+		be used for system simulations and numerical calculations.<br>
+		
+		</li><li> <b><a href="http://maxima.sourceforge.net/">Maxima</a></b> can be
+		used for symbolic calculations.<br>
+		</li><li> <b><a href="http://www.bluebit.gr/matrix-calculator/">http://www.bluebit.gr/matrix-calculator/</a></b>
+		is an online matrix calculator.<br>
+		</li></ul>
+
+		<h2><a name="drawtools">Drawing tools</a></h2>
+		<p>
+		<b>Xcircuit</b> is an excellent tool for drawing publication quality circuits. You can use it for your reports. It can also be used for schematic capture and netlisting, but is a bit cumbersome. Download the latest version of Xcircuit at <a href="http://xcircuit.ece.jhu.edu">here</a>. You might want to go through the <a href="http://xcircuit.ece.jhu.edu/tutorial/tutorial2.html"> schematic capture tutorial</a> in order get familiar with the netlisting process. If you use machines in FPGA/VLSI/IE labs, check to see if Xcircuit is already installed.
+		</p>
+
+		<h2><a name="cktsimulator">Circuit Simulators in our labs</a></h2>
+		<p> 
+		<b>Cadence</b> is a front to back IC design environment and is
+		installed in our research labs. If you are working on a project in
+		these labs, you can also use the simulator for coursework. To use the
+		MOS models below, use the MOS symbols from <b>analogLib</b> with
+		the right model names(cmosp and cmosn for pMOS and nMOS
+		respectively). 
+		</p>
+
+		<p>
+		<b>Design Architect and Eldo</b> from Mentor Graphics can be used
+		for schematic capture and circuit simulation respectively. The VLSI
+		lab in the EE dept. has license servers for these. You can install
+		these tools on your hostel(Linux) machines and use the VLSI lab
+		licenses. Download the directory <i>/pub/mentor_DAIC</i> from
+		athreya. Under this, you see compressed archives of Design Architect
+		and Eldo, and instructions for installation(<i>Readme.pdf</i>). The
+		instructions are self explanatory. From design architect, you can draw
+		schematics, invoke the circuit simulator and run analyses, and view
+		the results.  <a href="cadinfo/daic_readme.pdf">This file</a>, also
+		available in <i>/pub/mentor_DAIC</i>, outlines the procedure for
+		installing and using the simulator. Detailed documentation can be
+		found at 
+		<i>icflow_home/shared/pdfdocs</i> and
+		<i>icflow_home/shared/htmldocs</i> for Design Architect and at
+		<i>AMS_2005.3/documentation</i> for Eldo. If things don't work,
+		</p><ul>
+		<li> Go through <i>Readme.pdf</i> and make sure that you have followed
+		all the steps correctly. 
+		</li><li> Check that you are able to reach the license servers from your
+		machine by pinging them(10.7.9.34, 10.7.9.35, 10.7.9.36)
+		</li><li> Run "lmstat -c 1717@10.7.9.34" to check if the license servers are
+		running. If not, report it to Shankar(5478) and me. 
+		</li></ul>
+		(Thanks are due to Shankar and Abishek for figuring out these tools).
+		<p></p>
+
+		<p>
+		<b>Eldo</b> can be run in standalone mode to simulate
+		circuits. You'll need to code netlists by hand. There are institute
+		wide licenses for the stand alone simulator. If you are not going to
+		be doing schematic capture, but are going to type your netlist by
+		hand, use this. The binaries are installed in the DCF as well as the
+		FPGA and IE labs. Feel free to copy them to your hostel Linux PCs.
+		Eldo works like any other SPICE, so if you are familiar with SPICE
+		netlisting, it should be smooth sailing. To simulate a circuit, create
+		it in Xcircuit and generate a netlist. Add the required analysis
+		commands and include the MOS model files to get going. An extensive
+		Eldo user guide (eldo_ur.pdf) should help point out the powerful
+		features of the simulator. Manuals can be found in the
+		<i>$anacad/documentation</i> directory. To setup Eldo, see the end of
+		this section. Eldo can be downloaded from the FPGA lab machines
+		</p><ul>
+		<li> Version 2008.2 is installed at /tools/Mentor/AMS_2008_2_IXL/ Copy this directory to a suitable location on your machine. <br>
+                (If you get the following error:<br>
+		"/home/dhrid/Mentor/com/eldo: 358: Syntax error: Bad fd number" <br>
+		Chage line 356 of that file from "ulimit -s unlimited &gt;&amp; /dev/null" to "ulimit -s unlimited &gt;/dev/null 2&gt;&amp;1" <br>
+		</li><li> The 2008.2 version may not work with newer kernels. For that download Version 2011.1 which is at /tools/Mentor/ams_11_1.ixl.tar, extract the contents and follow the installation instructions 
+		</li></ul>
+		<p></p>
+		
+		<p>
+		<b>Xelga</b> This is a waveform viewer from Mentor Graphics that
+		understands Eldo output. Use this to plot your simulation
+		outputs. Manuals can be found in the
+		<i>$anacad/documentation</i> directory.
+		</p>
+		
+		<p>
+		<b>Eldo/Xelga setup with institute wide licenses:</b>
+		</p><ul>
+		  <li> Log on to the department ftp/ssh server 10.7.0.1 (athreya). Copy the directory <i>/pub/mentor</i> to some convenient location in  your machine.
+		  </li><li> Add the following line to your <i>/etc/hosts</i>  file 
+		  </li><li>    10.65.0.45  moon.cc.iitm.ernet.in  moon
+		  </li><li> Add the following lines to  your startup script in your home directory<br>
+		  
+		  <b>For csh or tcsh: ~/.cshrc </b><br>
+		  # ANACAD BEGIN #########################      <br>
+		  # ANACAD SOFTWARE Initialization	      <br>
+		  setenv    anacad  /tools/mentor	# (change as necessary. It is /pub/mentor in DCF) <br>
+		  source    $anacad/com/init_anacad	      <br>
+		  # ANACAD END #########################	      <br>
+		  setenv LM_LICENSE_FILE 1717@10.65.0.45        <br>
+		  set path = ($anacad/bin $path)        <br>  <br>
+		  
+		  <b>For zsh/bash: ~/.profile or ~/.bashrc </b><br>
+		  # ANACAD BEGIN #########################      <br>
+		  # ANACAD SOFTWARE Initialization	      <br>
+		  export anacad=/tools/mentor	# (change as necessary. It is /pub/mentor in DCF) <br>
+		  source $anacad/com/init_anacad.ksh	      <br>
+		  # ANACAD END #########################	      <br>
+		  export LM_LICENSE_FILE=1717@10.65.0.45        <br>
+		  export PATH=$anacad/bin:$PATH <br> <br>
+		</li></ul>		  
+
+		  For those who want to use the tool in DCF/FPGA Lab/IE Lab, follow the
+		  same procedure except steps 1 and 2.
+		  <p></p>
+		  
+		  <p>
+		  If things don't work,
+		  </p><ul>
+		    <li> If Eldo does not fire up : First make sure that the environment variables are properly set.
+		    </li><li> If Eldo complains about licenses :  check if your machine is able to reach the license server (moon.cc.iitm.ernet.in or 10.65.0.45).  If moon is not reachable, contact your network administrator.
+		    </li><li> If moon is reachable, but you are unable to run Eldo,  run "lmstat -c 1717@moon" from your command line. If the result is that the license server is running,  it means that your environment variables are not properly set. If the license server is dead, please contact Mr.S.K.Ramesh at the Computer Center (Phone 4980).
+		    </li><li> If Eldo crashes complaining about the kernel version, add the following line to .cshrc(and source it)
+		    setenv LD_ASSUME_KERNEL 2.4.1
+		  </li></ul>
+		  <p></p>
+		<p></p>
+
+		<h2><a name="freeware">Freeware circuit simulators</a></h2>
+		<p>
+		<b>Any simulator</b> that is capable of using the models below can be
+		used for your simulations. Free tools that have schematic capture
+		and simulation capabilities include the following. You may have to
+		make some trivial modifications to the syntax of model files for these
+		simulators.
+		</p><ul>
+		  <li> <a href="http://ngspice.sourceforge.net/index.html">NGSpice</a> is the continuation of original Berkeley SPICE3. Freely downloadable full simulator. 
+		  </li><li> <a href="http://www.ngspice.com/index.php">NGSpice online</a> can be used without installing anything. You just have to enter the netlist.
+		  </li><li> <a href="http://www.linear.com/designtools/software/switchercad.jsp">LT  Spice</a> from Linear technology. Runs on MS Windows. Thanks to T  Siva Viswanathan, here is a <a href="cadinfo/tsmc018withLTSPICE.pdf">howto</a> on using the models  below with LT Spice(<a href="cadinfo/cmosn.asy">cmosn.asy</a> and <a href="cadinfo/cmosp.asy">cmosp.asy</a>)
+		  </li><li> <a href="http://www.catena.uk.com/site/downloads/download.htm">Simetrix</a>  from Catena software. Runs on Linux and MS Windows. Free evaluation  version has a limit on circuit size.
+		  </li><li> <a href="http://www.spectrum-soft.com/">Micro cap</a> runs on MS    windows. Free evaluation version has a limit on circuit size.    Include the relevant library by adding the following line in the    text page of your schematic <br>  <b>.include c:\path_to_library\tsmc018.lib</b> <br> where  <b>path_to_library</b> is the path where tsmc018.lib is installed.  <br> Draw your schematic. For MOS transistors, use the model names  given in the library file (cmosn and cmosp).  It should show that it  is picking these names off the file you specified. Add the desired W  and L in the <b>VALUE</b> field. (e.g <b>VALUE=</b>W=2u L=0.18u M=2)  Add other components as required and modify their values. You can  then choose the desired analysis from 'Analysis' pull down menu, run  the analysis and plot the results.  
+		</li></ul>
+		In addition to these a number of open source circuit design tools(not just circuit simulators) are listed at <a href="http://opencircuitdesign.com/">this link</a>.
+		</table> </tr>
+    
+<tr>
+<td valign="top" style="background-color:#c1c1c1; width:180px">
+<!-- Navigation bar -->
+<table cellSpacing="2" cellPadding="5%" width="210" style="background-color:#c1c1c1"  border="0">
+
+<tr class="arrow"><td><a href="Announce.html" title="Details about
+lectures"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="Announce.html"
+class="barwhite" title="Announcement"> Announcement</a></td></tr>
+
+<tr class="arrow"><td><a href="index.html" title="Details about
+lectures"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="index.html"
+class="barwhite" title="Details about lectures"> Lectures</a></td></tr>
+
+<tr class="arrow"><td><a href="CAD-Lab.html" title="Details about
+CAD Lab"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="CAD-Lab.html"
+class="barwhite" title="CAD Lab"> CAD Lab<img src="../images/new.gif" height="16" width="33"></a> </li></a></td></tr>
+
+<tr class="arrow"><td><a href="Notes.html" title="Details about
+lectures Notes"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="Notes.html"
+class="barwhite" title="Notes"> Notes</a></td></tr>
+
+<tr class="arrow"><td><a href="Assignment.html" title="Assignment for
+the course"><img src="../pics/arrownew.gif" class="noborder"
+alt="->" style="height:13px; width:13px"></a><a
+href="Assignment.html" class="barwhite" title="Assignment for the
+course"> Assignment</a></td></tr>
+
+<tr class="arrow"><td><a href="Assignment.html" title="Assignment for
+the course"><img src="../pics/arrownew.gif" class="noborder"
+alt="->" style="height:13px; width:13px"></a><a
+href="Assignment.html" class="barwhite" title="Assignment for the
+course"> Sessional Papers</a></td></tr>
+    
+<tr class="arrow"><td><a href="references.html" title="Reference
+material and books"><img src="../pics/arrownew.gif"
+class="noborder" alt="->" style="height:13px; width:13px"></a><a
+href="references.html" class="barwhite" title="Reference material
+and books"> References</a></td></tr>
+
+<tr class="arrow"><td><a href="evaluation.html" title="Tentative
+evaluation scheme"><img src="../pics/arrownew.gif" class="noborder"
+alt="->" style="height:13px; width:13px"></a><a
+href="evaluation.html" class="barwhite" title="Tentative evaluation
+scheme"> Evaluation</a></td></tr>
+
+
+<tr class="arrow"><td><a href="fb.html" title="Give me feedback for
+the course"><img src="../pics/arrownew.gif" class="noborder"
+alt="->" style="height:13px; width:13px"></a><a href="fb.html"
+class="barwhite" title="Give me feedback for the course">
+Feedback</a></td></tr>
+
+<tr class="arrow"><td><a href="../teaching.html" title="Teaching
+Page"><img src="../pics/arrownew.gif" class="noborder" alt="->"
+style="height:13px; width:13px"></a><a href="../teaching.html"
+class="barwhite" title="Teaching"> Main</a></td></tr>
+
+</table>
+</td>
+<!-- End Navigation Bar -->
+</tr>
+</table>
+
+<p>
+<hr>
+
+<table cellspacing="2pt" cellpadding="1pt" style="margin:0pt 0pt 0pt 0pt;">
+<tr>
+<td align="center" valign="bottom" style="width:100px; background:#dfdfd7; color:inherit;">
+<a href="http://www.anybrowser.org/campaign/"><img
+    src="../pics/button-enhanced.gif" style="border:0;width:96px;height:32px" alt="Use Any Browser">
+	</a></td>
+<td align="right" valign="bottom" style="width:92px; background:#dfdfd7; color:inherit;">
+<a href="http://validator.w3.org/check?uri=referer"><img
+        src="../pics/valid-html401-blue"
+	style="border:0;height:31px;width:88px" alt="Valid HTML 4.01 Strict">
+</a>
+</td>
+<td align="right" valign="bottom" style="width:92px; background:#dfdfd7; color:inherit;">
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+  <img style="border:0;width:88px;height:31px"
+  src="../pics/valid-css-blue" alt="Valid CSS!"></a>
+</td>
+
+</tr></table>
+<p>
+<div align='center'><a href='http://www.hit-counts.com'><img src='http://www.hit-counts.com/counter.php?t=MTM1MDQwNA==' border='0' alt='Free Hit Counter'></a></div>
+Last updated on September 2015 at 15:16 IST</body>
+</html>
+
+
+
