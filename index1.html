@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Scholar Citation Count</title>
+</head>
+<body>
+  <h1>Google Scholar Citation Count</h1>
+  <p id="citationCount">Fetching citation count...</p>
+
+  <script>
+    var authorId = 'lWe4Q2UAAAAJ';
+    var url = 'https://scholar.google.com/citations?user=' + authorId + '&hl=en';
+
+    fetch(url)
+      .then(response => response.text())
+      .then(data => {
+        var parser = new DOMParser();
+        var htmlDocument = parser.parseFromString(data, 'text/html');
+        var citationCount = htmlDocument.querySelector('.gsc_rsb_std').textContent;
+        document.getElementById('citationCount').textContent = 'Citation count: ' + citationCount;
+      })
+      .catch(error => {
+        document.getElementById('citationCount').textContent = 'Failed to retrieve citation count';
+      });
+  </script>
+</body>
+</html>
