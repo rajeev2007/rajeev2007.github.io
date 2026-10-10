@@ -143,6 +143,36 @@ summary { cursor: pointer; font-weight: 500; color: var(--accent); padding-block
 .scopes .scope { margin: 0; }
 @media (max-width: 40rem) { .scopes { grid-template-columns: minmax(0, 1fr); } }
 
+/* block diagrams and waveforms */
+.viz { margin-top: 2rem; }
+.viz-note { font-size: 0.85rem; color: var(--muted); margin: 0 0 0.8rem; max-width: 42rem; }
+.vz-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.4rem; margin-bottom: 0.7rem; scrollbar-width: thin; }
+.vz-tab { font: inherit; font-size: 0.85rem; padding: 0.4rem 0.85rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.vz-tab:hover { border-color: var(--accent); }
+.vz-tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.vz-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 40rem) { .vz-grid { grid-template-columns: minmax(0, 1fr); } }
+.vz-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.7rem 0.8rem; min-width: 0; }
+.vz-card h4 { margin: 0 0 0.4rem; font-family: var(--f-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.vz-card svg { display: block; width: 100%; height: auto; max-width: 100%; }
+.viz-cap { font-size: 0.88rem; color: var(--muted); margin: 0.7rem 0 0; max-width: 42rem; }
+.bd-box { fill: var(--bg); stroke: var(--ink); stroke-width: 1.2; }
+.bd-box.acc { stroke: var(--accent); stroke-width: 1.8; }
+.bd-t { fill: var(--ink); font-family: var(--f-body); font-size: 11.5px; }
+.bd-a { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+.bd-bus { marker-end: none; }
+.bd-ah { fill: var(--muted); }
+.bd-l { fill: var(--muted); font-family: var(--f-mono); font-size: 10px; }
+.wv { fill: none; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.wv.a { stroke: var(--accent); }
+.wv.b { stroke: var(--ink); stroke-width: 1.5; }
+.wv.d { stroke: var(--muted); stroke-dasharray: 4 3; stroke-width: 1.2; }
+.wg { stroke: var(--line); stroke-width: 1; }
+.wt { fill: var(--muted); font-family: var(--f-mono); font-size: 10px; }
+.wp { fill: var(--ink); font-family: var(--f-mono); font-size: 10.5px; font-weight: 500; }
+.wn { fill: var(--muted); font-family: var(--f-body); font-size: 10.5px; }
+
 /* citations */
 .cstats { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; margin: 0 0 1rem; }
 .cstats div { min-width: 0; }
@@ -291,6 +321,17 @@ body { margin: 0; }
             <div><h3>Auto-regulated charge pump</h3><p>Self-regulating DC-DC converter for biomedical applications.</p></div>
             <div class="spec"><span>Efficiency</span> &gt;80%<br><span>Process</span> T55</div>
           </div>
+        </div>
+
+        <div class="viz" id="viz">
+          <p class="sub">Block diagrams and example waveforms</p>
+          <p class="viz-note">Conceptual diagrams and simulated waveforms that illustrate what each block does. They are not the actual schematics or measured data.</p>
+          <div class="vz-tabs" id="vz-tabs" role="tablist" aria-label="Choose a block"></div>
+          <div class="vz-grid" role="tabpanel">
+            <div class="vz-card"><h4>Block diagram</h4><div id="vz-diagram"></div></div>
+            <div class="vz-card"><h4>Example waveform</h4><div id="vz-wave"></div></div>
+          </div>
+          <p class="viz-cap" id="vz-cap"></p>
         </div>
       </div>
     </div>
@@ -603,6 +644,271 @@ body { margin: 0; }
     <footer>Content drawn from rajeev2007.github.io and his LinkedIn profile.</footer>
   </section>
 </main>
+
+<script>
+(function () {
+  var tabsEl = document.getElementById('vz-tabs');
+  var dgEl = document.getElementById('vz-diagram');
+  var wvEl = document.getElementById('vz-wave');
+  var capEl = document.getElementById('vz-cap');
+  if (!tabsEl || !dgEl || !wvEl || !capEl) return;
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+  /* ---------- block diagram helpers (viewBox 460 x 230) ---------- */
+  function box(x, y, w, h, text, cls) {
+    var lines = text.split('\n'), ty = y + h / 2 - (lines.length - 1) * 7 + 4, s = '';
+    s += '<rect class="bd-box' + (cls ? ' ' + cls : '') + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3"/>';
+    for (var i = 0; i < lines.length; i++) {
+      s += '<text class="bd-t" x="' + (x + w / 2) + '" y="' + (ty + i * 14) + '" text-anchor="middle">' + esc(lines[i]) + '</text>';
+    }
+    return s;
+  }
+  function arrow(pts) {
+    var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+    for (var i = 1; i < pts.length; i++) d += ' L' + pts[i][0] + ' ' + pts[i][1];
+    return '<path class="bd-a" d="' + d + '" marker-end="url(#ah)"/>';
+  }
+  function label(x, y, text, anchor) {
+    return '<text class="bd-l" x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'start') + '">' + esc(text) + '</text>';
+  }
+  function dwrap(inner, alt) {
+    return '<svg viewBox="0 0 460 230" role="img" aria-label="' + esc(alt) + '"><defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="bd-ah"/></marker></defs>' + inner + '</svg>';
+  }
+
+  function dPOR() {
+    return dwrap(
+      box(8, 92, 80, 46, 'VDD 1.8 V\nalways-on') +
+      arrow([[88, 115], [104, 115]]) +
+      '<path class="bd-a bd-bus" d="M104 22 L104 198"/>' +
+      box(130, 88, 84, 48, 'Reference') +
+      arrow([[104, 112], [130, 112]]) +
+      box(250, 10, 110, 40, 'Power-on reset\n(POR)', 'acc') +
+      box(250, 88, 110, 48, 'Power monitor\n(PMON)', 'acc') +
+      box(250, 174, 110, 48, 'RTC\nXOSC + counter', 'acc') +
+      arrow([[104, 22], [250, 22]]) +
+      arrow([[172, 88], [172, 38], [250, 38]]) +
+      arrow([[214, 112], [250, 112]]) +
+      arrow([[104, 198], [250, 198]]) +
+      box(388, 17, 64, 26, 'RESET_N') + arrow([[360, 30], [388, 30]]) +
+      box(388, 99, 64, 26, 'ALARM') + arrow([[360, 112], [388, 112]]) +
+      box(388, 185, 64, 26, 'TIME') + arrow([[360, 198], [388, 198]]) +
+      label(8, 160, 'Anti-hack,', 'start') + label(8, 174, '1.8 V devices', 'start'),
+      'Block diagram: supply and reference feed a power-on reset, a power monitor and a real-time clock');
+  }
+  function dLDO() {
+    return dwrap(
+      box(8, 70, 56, 36, 'VIN') + arrow([[64, 88], [110, 88]]) +
+      box(110, 62, 80, 52, 'Pass\ndevice', 'acc') +
+      arrow([[190, 88], [400, 88]]) +
+      box(400, 70, 52, 36, 'VOUT') +
+      box(222, 10, 112, 42, 'Current limit\n+ foldback', 'acc') +
+      arrow([[278, 88], [278, 52]]) +
+      arrow([[222, 31], [150, 31], [150, 62]]) +
+      box(130, 150, 80, 50, 'Error amp') +
+      arrow([[170, 150], [170, 114]]) +
+      box(24, 160, 64, 30, 'Vref') + arrow([[88, 175], [130, 175]]) +
+      box(310, 155, 84, 40, 'Divider') +
+      arrow([[352, 88], [352, 155]]) +
+      arrow([[310, 175], [210, 175]]) +
+      box(396, 130, 60, 50, 'Load\n+ Cout') + arrow([[426, 106], [426, 130]]),
+      'Block diagram: low-dropout regulator with pass device, error amplifier, divider, reference and current limit with foldback');
+  }
+  function dSAR() {
+    return dwrap(
+      box(8, 20, 84, 50, 'Temp / Vsys\n/ Isense') + arrow([[92, 45], [106, 45]]) +
+      box(106, 28, 50, 34, 'MUX') + arrow([[156, 45], [174, 45]]) +
+      box(174, 24, 66, 42, 'Sample\n& hold') + arrow([[240, 45], [258, 45]]) +
+      box(258, 24, 60, 42, 'Comp', 'acc') + arrow([[318, 45], [336, 45]]) +
+      box(336, 24, 66, 42, 'SAR logic', 'acc') +
+      arrow([[402, 45], [452, 45]]) + label(405, 36, 'D[11:0]', 'start') +
+      box(258, 120, 84, 44, 'CDAC', 'acc') +
+      arrow([[300, 120], [300, 66]]) +
+      arrow([[369, 66], [369, 142], [342, 142]]) +
+      box(258, 184, 84, 36, 'Ref buffer') + arrow([[300, 184], [300, 164]]) +
+      box(370, 184, 82, 36, 'Supply LDO') + arrow([[370, 202], [342, 202]]),
+      'Block diagram: 12-bit SAR ADC with input multiplexer, sample and hold, comparator, SAR logic, capacitive DAC, reference buffer and supply LDO');
+  }
+  function dBGR() {
+    return dwrap(
+      box(8, 60, 110, 60, 'Bandgap core\n(BJT pair + amp)', 'acc') +
+      arrow([[118, 90], [150, 90]]) +
+      box(150, 66, 64, 48, 'Sample\nswitch') +
+      arrow([[214, 90], [250, 90]]) +
+      box(250, 66, 64, 48, 'C hold') +
+      arrow([[314, 90], [350, 90]]) +
+      box(350, 72, 60, 36, 'VREF') +
+      box(120, 160, 120, 44, 'Duty-cycle\ncontrol', 'acc') +
+      arrow([[150, 182], [63, 182], [63, 120]]) +
+      arrow([[182, 160], [182, 114]]) +
+      label(420, 94, 'to ADC /', 'start') + label(420, 108, 'LDO', 'start') +
+      label(262, 138, 'holds VREF', 'start') + label(262, 152, 'between refreshes', 'start'),
+      'Block diagram: duty-cycled bandgap core, sample switch, hold capacitor and timing control');
+  }
+  function dCP() {
+    return dwrap(
+      box(8, 70, 48, 36, 'VIN') + arrow([[56, 88], [84, 88]]) +
+      box(84, 60, 106, 56, 'Switch network\n+ flying cap', 'acc') +
+      arrow([[190, 88], [236, 88]]) +
+      box(236, 62, 80, 52, 'Cout\n+ load') +
+      arrow([[316, 88], [348, 88]]) +
+      box(348, 72, 56, 32, 'VOUT') +
+      box(110, 128, 70, 28, 'Clk gate', 'acc') +
+      arrow([[145, 128], [145, 116]]) +
+      box(120, 172, 80, 36, 'Comp', 'acc') +
+      arrow([[160, 172], [160, 156]]) +
+      box(8, 172, 56, 36, 'Vref') + arrow([[64, 190], [120, 190]]) +
+      box(236, 172, 80, 36, 'Divider') +
+      arrow([[326, 88], [326, 190], [316, 190]]) +
+      arrow([[236, 190], [200, 190]]),
+      'Block diagram: charge pump with switch network and flying capacitor, output capacitor, divider, comparator against a reference and a clock gate');
+  }
+
+  /* ---------- waveform plotter (viewBox 460 x 230) ---------- */
+  function plot(o) {
+    var W = 460, H = 230, ml = 46, mr = 12, mt = 10, mb = 34, gap = 10;
+    var pw = W - ml - mr, total = H - mt - mb - gap * (o.panels.length - 1), sumh = 0, i;
+    for (i = 0; i < o.panels.length; i++) sumh += o.panels[i].h;
+    function X(x) { return ml + (x - o.xmin) / (o.xmax - o.xmin) * pw; }
+    var s = '<svg viewBox="0 0 460 230" role="img" aria-label="' + esc(o.alt) + '">', y0 = mt, j, k, p;
+    var maps = [];
+    for (i = 0; i < o.panels.length; i++) {
+      p = o.panels[i];
+      var ph = total * p.h / sumh, top = y0;
+      var Y = (function (pp, t0, hh) { return function (v) { return t0 + hh - (v - pp.ymin) / (pp.ymax - pp.ymin) * hh; }; })(p, top, ph);
+      maps.push(Y);
+      for (j = 0; j < o.xticks.length; j++) s += '<line class="wg" x1="' + X(o.xticks[j]).toFixed(1) + '" y1="' + top.toFixed(1) + '" x2="' + X(o.xticks[j]).toFixed(1) + '" y2="' + (top + ph).toFixed(1) + '"/>';
+      for (j = 0; j < p.yticks.length; j++) {
+        var yy = Y(p.yticks[j]);
+        s += '<line class="wg" x1="' + ml + '" y1="' + yy.toFixed(1) + '" x2="' + (W - mr) + '" y2="' + yy.toFixed(1) + '"/>';
+        s += '<text class="wt" x="' + (ml - 6) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end">' + esc(p.yfmt ? p.yfmt(p.yticks[j]) : p.yticks[j]) + '</text>';
+      }
+      s += '<text class="wp" x="' + (ml + 4) + '" y="' + (top + 11).toFixed(1) + '">' + esc(p.title) + '</text>';
+      for (j = 0; j < p.series.length; j++) {
+        var sr = p.series[j], d = '';
+        for (k = 0; k < sr.pts.length; k++) d += (k ? ' L' : 'M') + X(sr.pts[k][0]).toFixed(1) + ' ' + Y(sr.pts[k][1]).toFixed(1);
+        s += '<path class="wv ' + sr.cls + '" d="' + d + '"/>';
+      }
+      y0 += ph + gap;
+    }
+    for (j = 0; j < o.xticks.length; j++) s += '<text class="wt" x="' + X(o.xticks[j]).toFixed(1) + '" y="' + (H - mb + 14) + '" text-anchor="middle">' + o.xticks[j] + '</text>';
+    s += '<text class="wt" x="' + (ml + pw / 2) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(o.xlab) + '</text>';
+    for (j = 0; j < (o.notes || []).length; j++) {
+      var n = o.notes[j];
+      s += '<text class="wn" x="' + X(n.x).toFixed(1) + '" y="' + maps[n.p](n.y).toFixed(1) + '" text-anchor="' + (n.a || 'start') + '">' + esc(n.t) + '</text>';
+    }
+    return s + '</svg>';
+  }
+  function ticks(a, b, step) { var r = []; for (var v = a; v <= b + 1e-9; v += step) r.push(Math.round(v * 1000) / 1000); return r; }
+
+  function wPOR() {
+    var dt = 0.02, th = 1.2, hold = 1.0, above = null, rst = 0, v = [], r = [], t, vd;
+    for (t = 0; t <= 10.0001; t += dt) {
+      vd = 1.8 * (1 - Math.exp(-t / 0.8)) - 1.15 * Math.exp(-Math.pow((t - 6.8) / 0.28, 2));
+      if (vd < 0) vd = 0;
+      if (vd < th) { above = null; rst = 0; } else { if (above === null) above = t; if (t - above >= hold) rst = 1.8; }
+      v.push([t, vd]); r.push([t, rst]);
+    }
+    return plot({
+      alt: 'Simulated power-on reset: reset releases a delay after the supply passes the threshold and asserts again on a brown-out dip',
+      xmin: 0, xmax: 10, xticks: ticks(0, 10, 2), xlab: 'time (ms)',
+      panels: [
+        { h: 1.35, title: 'VDD (V)', ymin: 0, ymax: 2.2, yticks: [0, 0.9, 1.8], series: [{ pts: [[0, th], [10, th]], cls: 'd' }, { pts: v, cls: 'a' }] },
+        { h: 0.9, title: 'RESET_N', ymin: -0.2, ymax: 2.2, yticks: [0, 1.8], series: [{ pts: r, cls: 'b' }] }
+      ],
+      notes: [{ p: 0, x: 3.2, y: 1.32, t: 'threshold' }, { p: 0, x: 7.35, y: 0.85, t: 'brown-out dip' }, { p: 1, x: 2.05, y: 0.35, t: 'delay after VDD good' }]
+    });
+  }
+  function wLDO() {
+    return plot({
+      alt: 'Simulated LDO output characteristic: output voltage holds until the current limit, then folds back toward a lower short-circuit current',
+      xmin: 0, xmax: 1.4, xticks: [0, 0.25, 0.5, 0.75, 1, 1.25], xlab: 'load current (normalized to current limit)',
+      panels: [{ h: 1, title: 'VOUT (normalized)', ymin: 0, ymax: 1.25, yticks: [0, 0.5, 1], series: [
+        { pts: [[1, 1], [1, 0]], cls: 'd' },
+        { pts: [[0, 1], [0.97, 1], [1, 0.99], [0.3, 0]], cls: 'a' }] }],
+      notes: [{ p: 0, x: 0.7, y: 1.07, t: 'regulating' }, { p: 0, x: 1.04, y: 0.45, t: 'constant limit' }, { p: 0, x: 0.36, y: 0.62, t: 'foldback' }, { p: 0, x: 0.52, y: 0.08, t: 'short-circuit current' }]
+    });
+  }
+  function wSAR() {
+    var vin = 0.6143, code = 0, pts = [], k, trial;
+    for (k = 1; k <= 12; k++) { trial = code + Math.pow(2, -k); pts.push([k - 1, trial], [k, trial]); if (vin >= trial) code = trial; }
+    return plot({
+      alt: 'Simulated SAR conversion: the capacitive DAC trial level converges on the input over twelve cycles',
+      xmin: 0, xmax: 12, xticks: ticks(0, 12, 2), xlab: 'SAR cycle (one bit per cycle)',
+      panels: [{ h: 1, title: 'CDAC trial level / VREF', ymin: 0, ymax: 1.1, yticks: [0, 0.5, 1], series: [
+        { pts: [[0, vin], [12, vin]], cls: 'd' }, { pts: pts, cls: 'a' }] }],
+      notes: [{ p: 0, x: 0.15, y: 0.4, t: 'MSB' }, { p: 0, x: 11.9, y: 0.5, t: 'LSB', a: 'end' }, { p: 0, x: 11.9, y: 0.7, t: 'VIN', a: 'end' }]
+    });
+  }
+  function wBGR() {
+    var dt = 0.01, per = 2.5, on = 0.15, droop = 0.0035 / (per - on), v = 0.9965, en = [], vr = [], t, e;
+    for (t = 0; t <= 10.0001; t += dt) {
+      e = (t % per) < on;
+      if (e) v += (1 - v) * (1 - Math.exp(-dt / 0.03)); else v -= droop * dt;
+      en.push([t, e ? 1 : 0]); vr.push([t, v]);
+    }
+    return plot({
+      alt: 'Simulated duty-cycled bandgap: the core is enabled briefly each period and the hold capacitor keeps the reference between refreshes',
+      xmin: 0, xmax: 10, xticks: ticks(0, 10, 2), xlab: 'time (ms)',
+      panels: [
+        { h: 0.8, title: 'ENABLE', ymin: -0.2, ymax: 1.4, yticks: [0, 1], series: [{ pts: en, cls: 'b' }] },
+        { h: 1.4, title: 'VREF held (normalized)', ymin: 0.992, ymax: 1.003, yticks: [0.994, 0.998, 1.002], yfmt: function (v) { return v.toFixed(3); }, series: [{ pts: vr, cls: 'a' }] }
+      ],
+      notes: [{ p: 1, x: 3.0, y: 0.9945, t: 'slow droop on C hold' }]
+    });
+  }
+  function wCP() {
+    var dt = 0.1, v = 0, en = true, next = 1, vo = [], ee = [], t;
+    for (t = 0; t <= 70.0001; t += dt) {
+      if (t >= next) { if (en) v += (1.25 - v) * 0.10; next += 2; }
+      v -= 0.004 * dt; if (v < 0) v = 0;
+      if (v > 1.0) en = false; if (v < 0.97) en = true;
+      vo.push([t, v]); ee.push([t, en ? 1 : 0]);
+    }
+    return plot({
+      alt: 'Simulated charge pump: output ramps up in clock steps, then the comparator gates the clock so the output ripples around its target',
+      xmin: 0, xmax: 70, xticks: ticks(0, 70, 10), xlab: 'time (µs)',
+      panels: [
+        { h: 1.5, title: 'VOUT / target', ymin: 0, ymax: 1.2, yticks: [0, 0.5, 1], series: [{ pts: [[0, 1], [70, 1]], cls: 'd' }, { pts: vo, cls: 'a' }] },
+        { h: 0.7, title: 'CLK_EN', ymin: -0.3, ymax: 1.5, yticks: [0, 1], series: [{ pts: ee, cls: 'b' }] }
+      ],
+      notes: [{ p: 0, x: 14, y: 0.22, t: 'ramp in clock steps' }, { p: 0, x: 69, y: 0.8, t: 'ripple regulation', a: 'end' }]
+    });
+  }
+
+  var BLOCKS = [
+    { tab: 'POR / PMON / RTC', dg: dPOR, wv: wPOR, cap: 'Reset releases a fixed delay after the supply passes its threshold and asserts again on a brown-out dip. The power monitor and real-time clock sit on the always-on supply.' },
+    { tab: 'LDO', dg: dLDO, wv: wLDO, cap: 'The output holds its voltage until the current limit, then folds back so a short circuit draws less current than the limit.' },
+    { tab: 'AUX SAR ADC', dg: dSAR, wv: wSAR, cap: 'Successive approximation: the capacitive DAC tries one bit per cycle and converges on the input in 12 cycles.' },
+    { tab: 'Bandgap', dg: dBGR, wv: wBGR, cap: 'The bandgap core runs only briefly each period. A hold capacitor keeps the reference steady between refreshes, which cuts average current.' },
+    { tab: 'Charge pump', dg: dCP, wv: wCP, cap: 'The output ramps up in clock steps. Once it reaches the target, the comparator gates the clock so the output ripples around it.' }
+  ];
+
+  var btns = [];
+  function select(i, focus) {
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].setAttribute('aria-selected', j === i ? 'true' : 'false');
+      btns[j].setAttribute('tabindex', j === i ? '0' : '-1');
+    }
+    dgEl.innerHTML = BLOCKS[i].dg();
+    wvEl.innerHTML = BLOCKS[i].wv();
+    capEl.textContent = BLOCKS[i].cap;
+    if (focus) btns[i].focus();
+  }
+  BLOCKS.forEach(function (b, i) {
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'vz-tab'; btn.textContent = b.tab;
+    btn.setAttribute('role', 'tab');
+    btn.addEventListener('click', function () { select(i, false); });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); select((i + 1) % BLOCKS.length, true); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); select((i + BLOCKS.length - 1) % BLOCKS.length, true); }
+    });
+    tabsEl.appendChild(btn); btns.push(btn);
+  });
+  select(0, false);
+})();
+</script>
 
 <script>
 (function () {
