@@ -307,6 +307,7 @@ body { margin: 0; }
         <ul class="chips" aria-label="Top skills">
           <li>Analog circuit design</li>
           <li>Analog-to-digital converters</li>
+          <li>Sigma-delta DAC</li>
           <li>RTC</li>
           <li>LDO</li>
           <li>XOSC</li>
@@ -320,6 +321,10 @@ body { margin: 0; }
           <div class="block">
             <div><h3>General-purpose LDO</h3><p>Low-dropout regulator optimized for eMMC and UFS storage in consumer SoCs.</p></div>
             <div class="spec"><span>Protection</span> overcurrent, foldback</div>
+          </div>
+          <div class="block">
+            <div><h3>Audio sigma-delta DAC for Class D amplifiers</h3><p>Compact 4-bit IDWA (incremental data weighted averaging) precision multibit sigma-delta digital-to-analog converter, followed by a low-pass filter, loop filter and Class D stage.</p></div>
+            <div class="spec"><span>Resolution</span> 4-bit DAC<br><span>Mismatch shaping</span> IDWA<br><span>Chain</span> LPF, loop filter, Class D</div>
           </div>
           <div class="block">
             <div><h3>PMIC AUX SAR ADC</h3><p>Includes its reference buffer circuits and a power-supply LDO.</p></div>
@@ -768,6 +773,22 @@ body { margin: 0; }
       box(370, 184, 82, 36, 'Supply LDO') + arrow([[370, 202], [342, 202]]),
       'Block diagram: 12-bit SAR ADC with input multiplexer, sample and hold, comparator, SAR logic, capacitive DAC, reference buffer and supply LDO');
   }
+  function dDAC() {
+    return dwrap(
+      box(8, 20, 52, 44, 'PCM\naudio') + arrow([[60, 42], [68, 42]]) +
+      box(68, 20, 52, 44, 'Interp.\nfilter') + arrow([[120, 42], [128, 42]]) +
+      box(128, 20, 60, 44, 'SD mod.\nmultibit', 'acc') + arrow([[188, 42], [198, 42]]) +
+      box(198, 20, 52, 44, 'IDWA\nselect', 'acc') + arrow([[250, 42], [260, 42]]) +
+      box(260, 20, 64, 44, '4-bit DAC\n15 cells', 'acc') +
+      label(334, 38, '4-bit DAC with', 'start') + label(334, 52, 'IDWA element', 'start') + label(334, 66, 'selection', 'start') +
+      arrow([[292, 64], [292, 96], [41, 96], [41, 128]]) + label(150, 90, 'DAC output (analog)', 'start') +
+      box(8, 128, 66, 44, 'Low-pass\nfilter') + arrow([[74, 150], [96, 150]]) +
+      box(96, 128, 76, 44, 'Loop\nfilter', 'acc') + arrow([[172, 150], [194, 150]]) +
+      box(194, 128, 84, 44, 'Class D\nstage', 'acc') + arrow([[278, 150], [300, 150]]) +
+      box(300, 136, 60, 28, 'Speaker') +
+      '<path class="bd-a ctl" d="M289 150 L289 198 L134 198 L134 172" marker-end="url(#ah)"/>' + label(150, 192, 'output feedback', 'start'),
+      'Block diagram: PCM audio, interpolation filter, multibit sigma-delta modulator, IDWA element selection, 4-bit DAC, low-pass filter, loop filter, Class D stage with output feedback, and speaker');
+  }
   function dBGR() {
     return dwrap(
       box(8, 60, 110, 60, 'Bandgap core\n(BJT pair + amp)', 'acc') +
@@ -843,6 +864,26 @@ body { margin: 0; }
   }
   function ticks(a, b, step) { var r = []; for (var v = a; v <= b + 1e-9; v += step) r.push(Math.round(v * 1000) / 1000); return r; }
 
+  function wDAC() {
+    var N = 128, e1 = 0, e2 = 0, ptr = 0, lp = 7.5, ui = [], yo = [], fo = [], pp = [], n, u, v, y, e;
+    for (n = 0; n < N; n++) {
+      u = 7.5 + 6.6 * Math.sin(2 * Math.PI * n / 64);
+      v = u - 2 * e1 + e2; y = Math.max(0, Math.min(15, Math.round(v))); e = y - v; e2 = e1; e1 = e;
+      lp += 0.22 * (y - lp);
+      ui.push([n, u]); ui.push([n + 1, 7.5 + 6.6 * Math.sin(2 * Math.PI * (n + 1) / 64)]);
+      yo.push([n, y], [n + 1, y]); fo.push([n + 1, lp]); pp.push([n, ptr], [n + 1, ptr]);
+      ptr = (ptr + y) % 15;
+    }
+    return plot({
+      alt: 'Simulated 4-bit sigma-delta DAC: the 16-level staircase output is smoothed by a low-pass filter, while the IDWA pointer steps around the fifteen unit cells',
+      xmin: 0, xmax: 128, xticks: ticks(0, 128, 32), xlab: 'sample (at the modulator rate)',
+      panels: [
+        { h: 1.4, title: 'Input, 4-bit DAC out, low-pass out', ymin: -0.5, ymax: 20, yticks: [0, 7.5, 15], yfmt: function (v) { return v === 7.5 ? '7.5' : v; }, series: [{ pts: ui, cls: 'd' }, { pts: yo, cls: 'a' }, { pts: fo, cls: 'b' }] },
+        { h: 1, title: 'IDWA start cell (0 to 14)', ymin: -1, ymax: 20, yticks: [0, 7, 14], series: [{ pts: pp, cls: 'b' }] }
+      ],
+      notes: [{ p: 0, x: 126, y: 18, t: 'smooth after low-pass', a: 'end' }, { p: 1, x: 126, y: 17.5, t: 'pointer wraps around the cells', a: 'end' }]
+    });
+  }
   function wPOR() {
     var dt = 0.02, th = 1.2, hold = 1.0, above = null, rst = 0, v = [], r = [], t, vd;
     for (t = 0; t <= 10.0001; t += dt) {
@@ -921,6 +962,7 @@ body { margin: 0; }
   var BLOCKS = [
     { tab: 'POR / PMON / RTC', dg: dPOR, wv: wPOR, cap: 'Reset releases a fixed delay after the supply passes its threshold and asserts again on a brown-out dip. The power monitor and real-time clock sit on the always-on supply.' },
     { tab: 'LDO', dg: dLDO, wv: wLDO, cap: 'The output holds its voltage until the current limit, then folds back so a short circuit draws less current than the limit.' },
+    { tab: 'Audio DAC + Class D', dg: dDAC, wv: wDAC, cap: 'A multibit sigma-delta modulator drives a 4-bit DAC. IDWA starts each sample at the next unused unit cell, so cell mismatch is noise-shaped out of the audio band. The DAC output passes through a low-pass filter and a loop filter into the Class D stage, with feedback from the output.' },
     { tab: 'AUX SAR ADC', dg: dSAR, wv: wSAR, cap: 'Successive approximation: the capacitive DAC tries one bit per cycle and converges on the input in 12 cycles.' },
     { tab: 'Bandgap', dg: dBGR, wv: wBGR, cap: 'The bandgap core runs only briefly each period. A hold capacitor keeps the reference steady between refreshes, which cuts average current.' },
     { tab: 'Charge pump', dg: dCP, wv: wCP, cap: 'The output ramps up in clock steps. Once it reaches the target, the comparator gates the clock so the output ripples around it.' }
