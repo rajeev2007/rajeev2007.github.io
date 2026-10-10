@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Rajeev Pandey, Technical Manager, Analog IC Design at MediaTek. Research, publications and career.">
+<title>Rajeev Pandey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a bench-notebook page. A live PPG trace sits in a scope panel beside the intro, with real spec readouts under it; the rest is ruled sections in a narrow reading column. */
+:root {
+  --bg: #ffffff;
+  --surface: #f5f8fa;
+  --ink: #0f2029;
+  --muted: #4d6270;
+  --line: #dde5ea;
+  --accent: #0a6a84;
+  --accent-ink: #ffffff;
+  --scope-bg: #0c1a21;
+  --scope-grid: #1d3541;
+  --scope-trace: #6fd3ea;
+  --scope-label: #8fb0bd;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  padding-inline: 1rem;
+  padding-block: 0 4rem;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 68rem; margin-inline: auto; }
+
+/* nav */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  margin-inline: -1rem; padding-inline: 1rem;
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.7rem; }
+.nav b { font-family: var(--f-display); font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1.2rem; overflow-x: auto; scrollbar-width: none; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; white-space: nowrap; }
+.nav a:hover { color: var(--accent); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; align-items: center; padding-block: 3.5rem 2.5rem; }
+.kicker { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 1rem; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 0.98; letter-spacing: -0.03em; margin: 0 0 1.2rem; text-wrap: balance; }
+.lede { font-size: 1.1rem; max-width: 34rem; margin: 0 0 1.4rem; color: var(--ink); }
+.quals { display: flex; flex-wrap: wrap; gap: 0.5rem 0.6rem; margin: 0 0 1.6rem; padding: 0; list-style: none; }
+.quals li { font-family: var(--f-mono); font-size: 0.78rem; padding: 0.25rem 0.6rem; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); }
+.cta { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.btn { display: inline-block; padding: 0.6rem 1.1rem; border-radius: 4px; font-weight: 500; font-size: 0.92rem; text-decoration: none; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { color: var(--accent); background: transparent; }
+.btn:hover { filter: brightness(1.08); }
+
+/* scope panel */
+.scope { background: var(--scope-bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.9rem 0.9rem 0.7rem; min-width: 0; }
+.scope-head { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--scope-label); margin-bottom: 0.5rem; }
+.scope canvas { display: block; width: 100%; height: 11rem; max-width: 100%; }
+.scope-foot { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--f-mono); font-size: 0.7rem; color: var(--scope-label); margin-top: 0.4rem; }
+
+/* readouts */
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0; border-block: 1px solid var(--line); margin-bottom: 1rem; }
+.readout { padding: 1.1rem 1.2rem 1.1rem 0; min-width: 0; }
+.readout + .readout { padding-left: 1.2rem; border-left: 1px solid var(--line); }
+.readout .v { font-family: var(--f-mono); font-size: 1.55rem; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.readout .v small { font-size: 0.8rem; color: var(--muted); font-weight: 400; margin-left: 0.25rem; }
+.readout .l { font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* sections */
+section { padding-block: 3rem 0.5rem; }
+.sec-head { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 2rem; }
+.sec-head h2 { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.sec-head .tag { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0.45rem 0 0; }
+.body { min-width: 0; }
+.body p { margin: 0 0 1rem; max-width: 42rem; }
+.body h3 { font-family: var(--f-display); font-size: 1.05rem; margin: 0 0 0.3rem; letter-spacing: -0.01em; }
+
+/* current work */
+.blocks { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-top: 1.4rem; }
+.block { background: var(--surface); padding: 1.1rem 1.2rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 0.5rem 1.5rem; }
+.block p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+.block .spec { font-family: var(--f-mono); font-size: 0.8rem; line-height: 1.7; }
+.block .spec span { color: var(--muted); }
+
+/* research challenges */
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 1rem 0 0; list-style: none; }
+.chips li { font-size: 0.85rem; padding: 0.3rem 0.7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+
+/* timeline */
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 1.5rem; padding-block: 0.9rem; border-top: 1px solid var(--line); }
+.tl li:last-child { border-bottom: 1px solid var(--line); }
+.tl .when { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); padding-top: 0.15rem; }
+.tl .what { font-weight: 600; }
+.tl .where { color: var(--muted); font-size: 0.92rem; }
+.tl li.now .when { color: var(--accent); }
+.tl .work { margin: 0.55rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; color: var(--muted); }
+.tl .work li { display: list-item; border: 0; padding: 0; margin-bottom: 0.25rem; }
+.tl .work li:last-child { border: 0; }
+.tl .work b { color: var(--ink); font-weight: 500; }
+
+/* education */
+.edu { display: grid; gap: 1.2rem; }
+.edu article { padding-block: 0.2rem; border-left: 2px solid var(--line); padding-left: 1.1rem; min-width: 0; }
+.edu .yr { font-family: var(--f-mono); font-size: 0.78rem; color: var(--muted); }
+.edu h3 { margin: 0.15rem 0 0.2rem; }
+.edu p { margin: 0; font-size: 0.92rem; color: var(--muted); max-width: none; }
+
+/* publications */
+.pubs { list-style: none; margin: 0; padding: 0; }
+.pubs li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; padding-block: 0.7rem; border-top: 1px solid var(--line); font-size: 0.92rem; }
+.pubs li:last-child { border-bottom: 1px solid var(--line); }
+.pubs .venue { font-family: var(--f-mono); font-size: 0.74rem; color: var(--accent); line-height: 1.5; }
+.pubs .t { overflow-wrap: anywhere; }
+.pubs .a { color: var(--muted); font-size: 0.85rem; }
+.sub { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 1.6rem 0 0.6rem; }
+.sub:first-child { margin-top: 0; }
+details { margin-top: 0.4rem; }
+summary { cursor: pointer; font-weight: 500; color: var(--accent); padding-block: 0.5rem; }
+
+/* citations */
+.cstats { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; margin: 0 0 1rem; }
+.cstats div { min-width: 0; }
+.cstats .v { font-family: var(--f-mono); font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.cstats .l { font-size: 0.82rem; color: var(--muted); }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1rem 0.6rem; max-width: 36rem; }
+.chart svg { display: block; width: 100%; height: auto; max-width: 100%; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .bar { fill: var(--accent); }
+.chart .bar.ytd { fill: var(--accent); opacity: 0.55; }
+.chart text { fill: var(--muted); font-family: var(--f-mono); font-size: 12px; }
+.chart text.val { fill: var(--ink); font-size: 13px; font-weight: 500; }
+.chart-note { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 0; max-width: none; }
+.chart-cta { margin-top: 1rem; }
+
+
+.widget { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; max-width: 36rem; overflow: hidden; }
+.widget iframe { display: block; width: 100%; height: 22rem; border: 0; background: transparent; color-scheme: light; filter: invert(1) hue-rotate(180deg); }
+/* citations centred */
+#citations .sec-head { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; text-align: center; }
+#citations .cstats, #citations .cta { justify-content: center; }
+#citations .widget, #citations .chart { margin-inline: auto !important; }
+#citations details { max-width: 36rem; margin-inline: auto; }
+
+/* honors */
+.honors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.honors li { background: var(--surface); padding: 0.9rem 1.1rem; font-size: 0.92rem; min-width: 0; }
+.honors .y { display: block; font-family: var(--f-mono); font-size: 0.74rem; color: var(--accent); margin-bottom: 0.15rem; }
+
+/* projects & teaching */
+.proj { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+.proj article { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.1rem; min-width: 0; }
+.proj h3 { font-size: 0.98rem; line-height: 1.3; }
+.proj p { font-size: 0.88rem; color: var(--muted); margin: 0.4rem 0 0; }
+.proj .meta { font-family: var(--f-mono); font-size: 0.72rem; color: var(--accent); }
+.twocol { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem 2rem; }
+.twocol ul { margin: 0; padding-left: 1.1rem; font-size: 0.92rem; }
+.twocol li { margin-bottom: 0.25rem; }
+.twocol h3 { margin-bottom: 0.5rem; }
+
+/* videos */
+.vids { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+.vids a { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 0.9rem; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; color: var(--ink); font-size: 0.92rem; }
+.vids a:hover { border-color: var(--accent); }
+.vids span { font-family: var(--f-mono); font-size: 0.75rem; color: var(--accent); white-space: nowrap; }
+
+/* contact */
+.contact { margin-top: 3rem; padding: 1.8rem 1.6rem; background: var(--scope-bg); color: #e4edf1; border-radius: 6px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem 2.5rem; }
+.contact h2 { font-family: var(--f-display); font-size: 1.7rem; letter-spacing: -0.02em; margin: 0 0 0.5rem; line-height: 1.1; }
+.contact p { margin: 0; color: #9db4bf; max-width: 30rem; }
+.contact dl { margin: 0; display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.55rem 1rem; font-size: 0.92rem; align-self: center; }
+.contact dt { font-family: var(--f-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7f9fac; padding-top: 0.2rem; }
+.contact dd { margin: 0; overflow-wrap: anywhere; }
+.contact a { color: #6fd3ea; }
+.copy { font: inherit; font-family: var(--f-mono); font-size: 0.72rem; color: #e4edf1; background: transparent; border: 1px solid #38505c; border-radius: 3px; padding: 0.1rem 0.5rem; margin-left: 0.5rem; cursor: pointer; }
+.copy:hover { border-color: #6fd3ea; }
+footer { margin-top: 2rem; font-size: 0.8rem; color: var(--muted); }
+
+@media (max-width: 52rem) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding-block: 2.2rem 1.5rem; gap: 2rem; }
+  .sec-head { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .block { grid-template-columns: minmax(0, 1fr); }
+  .contact { grid-template-columns: minmax(0, 1fr); }
+  .tl li { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .pubs li { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .readout, .readout + .readout { padding: 0.9rem 0; border-left: 0; }
+  .readout + .readout { border-top: 1px solid var(--line); }
+}
+@media (max-width: 30rem) {
+  .contact dl { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .contact dd { margin-bottom: 0.5rem; }
+}
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+</style>
+
+</head>
+<body>
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <b>Rajeev Pandey</b>
+    <ul>
+      <li><a href="#now">Current work</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#citations">Citations</a></li>
+      <li><a href="#career">Career</a></li>
+      <li><a href="#honors">Honors</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <div>
+      <p class="kicker">Analog &amp; mixed-signal IC design · Hsinchu, Taiwan</p>
+      <h1>Rajeev Pandey</h1>
+      <p class="lede">Technical Manager, Analog IC Design at MediaTek. I design ultra-low-power analog and mixed-signal circuits for IoT, biomedical, audio and PMIC applications.</p>
+      <ul class="quals">
+        <li>Ph.D. · NYCU (NCTU), Taiwan</li>
+        <li>M.Tech · IIT Delhi</li>
+        <li>B.Tech · UPTU Lucknow</li>
+        <li>Senior Member, IEEE</li>
+      </ul>
+      <div class="cta">
+        <a class="btn primary" href="#contact">Get in touch</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/rajeevvce2007/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost" href="https://scholar.google.com.tw/citations?user=lWe4Q2UAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
+      </div>
+    </div>
+
+  </header>
+
+  <section id="now">
+    <div class="sec-head">
+      <div><h2>Current work</h2><p class="tag">MediaTek · 2021 – now</p></div>
+      <div class="body">
+        <p>I lead the design of low-power analog circuits for SoC consumer products, covering security-hardened power and timing blocks, data converters and power management. I work on the full lifecycle: architecture, circuit design, verification and post-silicon validation.</p>
+        <ul class="chips" aria-label="Top skills">
+          <li>Analog circuit design</li>
+          <li>Analog-to-digital converters</li>
+          <li>RTC</li>
+          <li>LDO</li>
+          <li>XOSC</li>
+          <li>Verilog-A</li>
+        </ul>
+        <div class="blocks">
+          <div class="block">
+            <div><h3>Security-hardened POR, PMON and RTC</h3><p>Anti-hack power-on reset, power monitor and real-time clock for SoC consumer products, including an overdrive implementation.</p></div>
+            <div class="spec"><span>Process</span> 12 nm<br><span>Devices</span> 1.8 V only</div>
+          </div>
+          <div class="block">
+            <div><h3>General-purpose LDO</h3><p>Low-dropout regulator optimized for eMMC and UFS storage in consumer SoCs.</p></div>
+            <div class="spec"><span>Protection</span> overcurrent, foldback</div>
+          </div>
+          <div class="block">
+            <div><h3>PMIC AUX SAR ADC</h3><p>Includes its reference buffer circuits and a power-supply LDO.</p></div>
+            <div class="spec"><span>Resolution</span> 12 bit<br><span>Process</span> T28<br><span>FoM, no buffer</span> &lt;16 fJ/cs @ 0.9 V<br><span>FoM, with buffer</span> &lt;150 fJ/cs @ 1.8 V</div>
+          </div>
+          <div class="block">
+            <div><h3>Duty-cycled bandgap reference</h3><p>Low-noise reference that draws only nanoamp-level current.</p></div>
+            <div class="spec"><span>Noise</span> 2.5 µVrms<br><span>Current</span> 450 nA<br><span>Process</span> 12 nm FFP</div>
+          </div>
+          <div class="block">
+            <div><h3>Auto-regulated charge pump</h3><p>Self-regulating DC-DC converter for biomedical applications.</p></div>
+            <div class="spec"><span>Efficiency</span> &gt;80%<br><span>Process</span> T55</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="sec-head">
+      <div><h2>Research</h2><p class="tag">Ph.D. · 2017 – 2021</p></div>
+      <div class="body">
+        <p>My doctoral work, advised by Prof. Paul C.-P. Chao at NCTU, built a readout microsystem for a flexible OLED-OPD photoplethysmography (PPG) patch. The goal was continuous, accurate heart-rate and blood-pressure monitoring from a wearable.</p>
+        <p>Heart disease caused 17.9 million deaths in 2019, according to the WHO, which is why regular tracking of vital signs matters. The hard part is building a sensor that tolerates motion, misplacement and temperature drift. The circuit and signal-processing problems I addressed:</p>
+        <ul class="chips">
+          <li>Organic sensor degradation</li>
+          <li>OLED and OPD non-linearity and parasitics</li>
+          <li>Noise and motion artifacts</li>
+          <li>Signal saturation and mispositioning</li>
+          <li>Temperature dependence</li>
+          <li>Wide dynamic range, low-noise on-chip microsystem</li>
+        </ul>
+        <p style="margin-top:1.2rem">Dissertation: <em>Design and Validation of Low Power Integrated Adaptive Readout Circuits for a Flexible OLED-OPD PPG Sensor Patch Towards Accurate Measurement of Bio-Signs.</em></p>
+        <figure class="scope" style="margin:1.4rem 0 0; max-width:36rem" aria-label="Animated photoplethysmography waveform">
+          <div class="scope-head"><span>PPG · OLED-OPD patch</span><span>Live trace</span></div>
+          <canvas id="ppg" width="640" height="220" role="img" aria-label="Scrolling photoplethysmography pulse waveform"></canvas>
+          <div class="scope-foot"><span>Sensing range 20 nA – 10 µA</span><span>HR error &lt; 3.4 bpm</span></div>
+        </figure>
+        <ul class="vids" aria-label="Measurement videos">
+          <li><a href="https://www.youtube.com/watch?v=IeXmBVbLzrg" target="_blank" rel="noopener">OLED-OPD sensor patch with readout IC <span>Watch ↗</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=wDBkSUeAj0Q" target="_blank" rel="noopener">Pulse rate and blood pressure from the PPG signal <span>Watch ↗</span></a></li>
+          <li><a href="https://www.youtube.com/watch?v=h8ggKozDZgA" target="_blank" rel="noopener">Blood flow volume from the PPG signal <span>Watch ↗</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications">
+    <div class="sec-head">
+      <div><h2>Publications</h2><p class="tag">IEEE · Springer</p></div>
+      <div class="body">
+        <p class="sub">Journals</p>
+        <ul class="pubs">
+          <li><span class="venue">IEEE Trans. Consumer Electronics<br>2025</span><span class="t">Energy Optimization in Consumer Lightings: An IoT-Based Adaptive Control Mode<br><span class="a">Pandey S.K., Goyal P., Pandey R.K., Panigrahi B.K.</span></span></li>
+          <li><span class="venue">IEEE Sensors Journal<br>2025</span><span class="t">An Ultralow 6-µW Analog Front-End for a Flexible OLED-µLED-OPD PPG Patch by PPG-Gated PDM Emission to Sense Heart Rate</span></li>
+          <li><span class="venue">IEEE Sensors Journal<br>2024</span><span class="t">A low-power PPG readout with an automatic switching between ambient light and OLED driver</span></li>
+          <li><span class="venue">IEEE TBioCAS<br>2022</span><span class="t">A Dual-Channel PPG Readout System with Motion-Tolerant Adaptability for OLED-OPD Sensors <span class="a">(invited from ISCAS)</span></span></li>
+          <li><span class="venue">Microsyst. Technol.<br>2022</span><span class="t">Design and development of a photoplethysmography based microsystem for mental stress estimation</span></li>
+          <li><span class="venue">Microsyst. Technol.<br>2022 · Review</span><span class="t">Technology scaling impact on VLSI interconnect and low swing signaling technique</span></li>
+          <li><span class="venue">Microsyst. Technol.<br>2022</span><span class="t">A new delta-sigma analog to digital converter with high-resolution and low offset for detecting photoplethysmography signal <span class="a">(Pribadi, Pandey, Chao)</span></span></li>
+        </ul>
+        <details>
+          <summary>Earlier journal papers (2019 – 2021)</summary>
+          <ul class="pubs">
+            <li><span class="venue">Microsyst. Technol.<br>2021</span><span class="t">Design and implementation of a new light to digital converter for the PPG sensor <span class="a">(Pribadi, Pandey, Chao)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2021</span><span class="t">Design and implementation of a photoplethysmography acquisition system with an optimized artificial neural network for accurate blood pressure measurement <span class="a">(Pandey, Lin, Chao)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2020</span><span class="t">External temperature sensor assisted a new low power photoplethysmography readout system for accurate measurement of the bio-signs <span class="a">(Pandey, Chao)</span></span></li>
+            <li><span class="venue">Microsyst. Technol. 26<br>2020</span><span class="t">Optimizing a novel PPG sensor patch via optical simulations towards accurate heart rates <span class="a">(Pribadi, Pandey, Chao)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2020</span><span class="t">Achieving high sensing in 0.5 nA for the driving pixel currents in AMOLEDs with settling time of 7 µs by a new external current sensing circuit <span class="a">(Pandey, Huang, Ho et al.)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2020</span><span class="t">A Fast-Digital Chip for Estimating Blood Pressure Using a Non-Invasive, Cuffless PPG Sensor <span class="a">(Yeh, Chao, Tu, Kao, Pandey)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2019</span><span class="t">An Efficient Energy Harvesting Circuit for Batteryless IoT Devices <span class="a">(Yang, Pandey, Chao)</span></span></li>
+            <li><span class="venue">Microsyst. Technol.<br>2019</span><span class="t">A Low-Power Reference-Less Clock/Data Recovery for Visible Light Communication Devices Requiring Low Data Throughput <span class="a">(Liu, Pribadi, Chao, Pandey)</span></span></li>
+          </ul>
+        </details>
+
+        <p class="sub">Selected conferences</p>
+        <ul class="pubs">
+          <li><span class="venue">IEEE ISCAS<br>2023</span><span class="t">A PPG Readout Integrated With RPTT Estimation in Analog For Blood Pressure Measurement</span></li>
+          <li><span class="venue">IEEE Sensors<br>2021</span><span class="t">A Low-Power 54 µW Adaptive Analog Front-End with Adaptive Intensity Control for an Organic PPG Sensor in Wearable Devices</span></li>
+          <li><span class="venue">IEEE ISCAS<br>2021</span><span class="t">An Adaptive Analog Front End for a Flexible PPG Sensor Patch with Self-Determined Motion Related DC Drift Removal</span></li>
+          <li><span class="venue">IEEE RAICS<br>2020</span><span class="t">Analyzing the Performance of 7nm FinFET Based Logic Circuit for the Signal Processing in Neural Network <span class="a">(Pandey R.K., Pandey S.K.)</span></span></li>
+          <li><span class="venue">IEEE Sensors<br>2019</span><span class="t">A New Adaptive Readout System for a New OLED OPD Flexible Patch PPG Sensor <span class="a">(Pandey, Pribadi, Chao)</span></span></li>
+        </ul>
+        <details>
+          <summary>More conference papers (2018)</summary>
+          <ul class="pubs">
+            <li><span class="venue">IEEE RAICS<br>2018</span><span class="t">High Resolution Comparator Design for RF Imager <span class="a">(Pandey R.K., Pandey S.K.)</span></span></li>
+            <li><span class="venue">IEEE Sensors<br>2018</span><span class="t">Estimating Blood Pressure via Artificial Neural Networks Based on Measured Photoplethysmography Waveforms <span class="a">(Priyanka, Chao, Tu, Kao, Yeh, Pandey, Fitrah)</span></span></li>
+            <li><span class="venue">IEEE Sensors<br>2018</span><span class="t">Design and Implementation of OLED Driving and OPD Readout Circuitry for an Optical Vibration Sensor <span class="a">(Wu, Kao, Chao, Wey, Sauter, Eka, Pandey)</span></span></li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="citations">
+    <div class="sec-head">
+      <div><h2>Citations</h2><p class="tag">Google Scholar</p></div>
+      <div class="body">
+        <div class="widget">
+          <iframe id="scholar-widget" title="Live Google Scholar citation widget for Rajeev Pandey" src="https://www.jung.ms/citations.php?id=lWe4Q2UAAAAJ&amp;lang=en" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </div>
+        <details>
+          <summary>Snapshot chart (10 Oct 2026)</summary>
+          <figure class="chart" style="margin:0">
+          <svg viewBox="0 0 480 252" role="img" aria-labelledby="ct">
+            <title id="ct">Citations per year: 2020, 10; 2021, 36; 2022, 42; 2023, 40; 2024, 62; 2025, 55; 2026, 37</title>
+            <line class="grid" x1="36" y1="20" x2="468" y2="20"/>
+            <line class="grid" x1="36" y1="120" x2="468" y2="120"/>
+            <line class="grid" x1="36" y1="220" x2="468" y2="220"/>
+            <text x="28" y="24" text-anchor="end">70</text>
+            <text x="28" y="124" text-anchor="end">35</text>
+            <text x="28" y="224" text-anchor="end">0</text>
+
+            <rect class="bar" x="48.9" y="191.4" width="36" height="28.6"/>
+            <rect class="bar" x="110.6" y="117.1" width="36" height="102.9"/>
+            <rect class="bar" x="172.3" y="100" width="36" height="120"/>
+            <rect class="bar" x="234" y="105.7" width="36" height="114.3"/>
+            <rect class="bar" x="295.7" y="42.9" width="36" height="177.1"/>
+            <rect class="bar" x="357.4" y="62.9" width="36" height="157.1"/>
+            <rect class="bar ytd" x="419.1" y="114.3" width="36" height="105.7"/>
+
+            <text class="val" x="66.9" y="185" text-anchor="middle">10</text>
+            <text class="val" x="128.6" y="111" text-anchor="middle">36</text>
+            <text class="val" x="190.3" y="94" text-anchor="middle">42</text>
+            <text class="val" x="252" y="99" text-anchor="middle">40</text>
+            <text class="val" x="313.7" y="37" text-anchor="middle">62</text>
+            <text class="val" x="375.4" y="57" text-anchor="middle">55</text>
+            <text class="val" x="437.1" y="108" text-anchor="middle">37</text>
+
+            <text x="66.9" y="240" text-anchor="middle">2020</text>
+            <text x="128.6" y="240" text-anchor="middle">2021</text>
+            <text x="190.3" y="240" text-anchor="middle">2022</text>
+            <text x="252" y="240" text-anchor="middle">2023</text>
+            <text x="313.7" y="240" text-anchor="middle">2024</text>
+            <text x="375.4" y="240" text-anchor="middle">2025</text>
+            <text x="437.1" y="240" text-anchor="middle">2026*</text>
+          </svg>
+          <p class="chart-note">Snapshot from 10 Oct 2026. *2026 is a partial year. This page cannot refresh itself, so open the profile for current numbers.</p>
+        </figure>
+        </details>
+        <div class="cta chart-cta">
+          <a class="btn primary" href="https://scholar.google.com.tw/citations?user=lWe4Q2UAAAAJ&amp;hl=en" target="_blank" rel="noopener">View live on Google Scholar ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="career">
+    <div class="sec-head">
+      <div><h2>Career &amp; education</h2><p class="tag">2007 – now</p></div>
+      <div class="body">
+        <ol class="tl" aria-label="Positions held">
+          <li class="now"><span class="when">06/2025 – now</span><span><span class="what">Technical Manager, Analog IC Design</span><br><span class="where">MediaTek Inc., Hsinchu, Taiwan</span>
+            <ul class="work">
+              <li>Leading design and development of low-power analog circuits for security-hardened (anti-hack) POR, PMON and RTC, including an overdrive implementation using only 1.8 V devices in 12 nm for SoC consumer products</li>
+              <li>Designed a general-purpose low-dropout regulator with overcurrent protection and foldback, optimized for eMMC and UFS storage in consumer SoCs</li>
+              <li>Papers: IEEE Sensors Journal 2025 (6 µW PPG front end); IEEE Trans. Consumer Electronics 2025</li>
+            </ul></span></li>
+          <li><span class="when">09/2021 – 05/2025</span><span><span class="what">Senior Analog Design Engineer</span><br><span class="where">MediaTek Inc., Hsinchu, Taiwan</span>
+            <ul class="work">
+              <li>Developed compact IDWA (incremental data weighted averaging) precision multibit sigma-delta DACs for Class D audio amplifiers</li>
+              <li>Developed a low-power synchronous AUX SAR ADC for brownout and temperature sensing</li>
+              <li>Developed ultra-low-power new analog IP for audio and biomedical circuits and systems:
+                <ul class="work">
+                  <li>Low-area ULP AUX ADC with reference buffer for the U153 audio PMIC, with analog front ends such as temperature, Vsys and Isense</li>
+                  <li>General-purpose 12-bit SAR ADC with reference buffer and supply LDO in T28: FoM under 16 fJ/cs without reference buffer at 0.9 V, under 150 fJ/cs with buffer and LDO at 1.8 V</li>
+                  <li>Duty-cycled bandgap reference in 12 nm for biomedical use: 2.5 µVrms noise, 450 nA nominal-mode current at 1.8 V</li>
+                  <li>Auto-regulated DC-DC converter (charge pump) for biomedical use: over 80% efficiency in T55</li>
+                </ul>
+              </li>
+              <li>Papers: IEEE Sensors Journal 2024; IEEE ISCAS 2023 (PPG readout with analog RPTT estimation for blood pressure)</li>
+              <li>Journal papers in this period: IEEE TBioCAS 2022 (invited from ISCAS 2021), Microsystem Technologies 2022 (three papers)</li>
+            </ul></span></li>
+          <li><span class="when">02/2018 – 07/2021</span><span><span class="what">Research Assistant, Sensor IC Design Lab</span><br><span class="where">National Chiao Tung University, Hsinchu, Taiwan</span>
+            <ul class="work">
+              <li>Designed and verified robust, adaptive, motion-artifact-tolerant analog front ends for OLED PPG sensors in 180 nm: TIA, filters, PGA, comparator, TDC, CTDSM, bandgap references, LDO and current DAC</li>
+              <li><b>Adaptive readout system</b> for an OLED-OPD flexible PPG patch (TSMC 180 nm): 20 nA to 10 µA range, heart-rate error under 3.4 bpm</li>
+              <li>Developed signal processing and interpretation algorithms for motion artifact rejection, heart rate, blood pressure, SpO2 and mental stress estimation</li>
+              <li>Co-designed the following projects:
+                <ul class="work">
+                  <li><b>AMOLED pixel current sensing</b> readout and pixel driver (TSMC T18): 0.5 nA precision, 7 µs settling, 990 µW</li>
+                  <li>Gas sensor readout</li>
+                  <li>MPPT-based solar energy harvesting circuit for IoT tags</li>
+                  <li>Ultrasonic sensor transceiver</li>
+                  <li>OLED-OPD vibration sensor circuit</li>
+                  <li>Clock and data recovery circuit for visible light communication</li>
+                </ul>
+              </li>
+              <li>Wrote project proposals for Taiwan MOST and industry-collaborated projects to secure funding, working with Prof. Paul Chao</li>
+              <li>Publications: one IEEE TBioCAS paper, two IEEE Sensors Journal papers, three IEEE Sensors conference papers, two IEEE ISCAS papers and seven Microsystem Technologies (Springer Nature) papers</li>
+              <li>FutureTech Breakthrough Award 2019 for the flexible PPG patch; ASME ISPS Fellowship 2019; Best Paper Award in track 2021</li>
+            </ul></span></li>
+          <li><span class="when">07/2020 – 09/2020</span><span><span class="what">Analog Design Engineer (Summer Intern)</span><br><span class="where">MediaTek Inc., Hsinchu, Taiwan</span>
+            <ul class="work">
+              <li>Designed a test key for a ULP-ULV ring oscillator and a current-mode DAC in TSMC 12 nm FFP, from simulation to silicon validation</li>
+            </ul></span></li>
+          <li><span class="when">08/2014 – 07/2016</span><span><span class="what">Assistant Professor, Department of ECE</span><br><span class="where">Neelkanth Institute of Technology, Meerut, India</span>
+            <ul class="work">
+              <li>Taught VLSI Design, IC Technology, Electronic Circuits, Switching Theory, Principles of Communication, Electronic Switching and Radar Engineering</li>
+              <li>Ran the CAD of Electronics, Digital Electronics, Logic Design, Communication, Project, and Microwave and Optical Communication labs</li>
+              <li>Mentored student projects on a 4-bit low-power flash ADC (team of five) and PAM, PWM and PPM modulators, and led a boost converter project</li>
+              <li>Coordinated ECE second year, the R&amp;D Lab, and the department unit test and course coverage plan; organized the Vibration 2016 Robo Race and a 2015 embedded and robotics workshop</li>
+              <li>Published a paper at IC4T 2016 on scaling and low swing signaling for VLSI interconnect, and attended short courses on industrial automation at IIT Delhi (2014, 2015)</li>
+            </ul></span></li>
+          <li><span class="when">07/2011 – 07/2012</span><span><span class="what">Lecturer, Department of ECE</span><br><span class="where">Neelkanth Institute of Technology, Meerut, India</span>
+            <ul class="work">
+              <li>Taught Radar Engineering, Satellite Communication, Digital Logic Design and VLSI Design</li>
+              <li>Instructed the Electronic Circuit Design, Computer Aided Design, and Microwave and Optical Communication labs</li>
+            </ul></span></li>
+        </ol>
+        <p class="sub" style="margin-top:2rem">Education</p>
+        <div class="edu">
+          <article>
+            <span class="yr">2017 – 2021</span>
+            <h3>Ph.D., Sensor IC Design</h3>
+            <p>National Chiao Tung University (now NYCU), Taiwan. Analog and mixed-signal circuit design, grade 93.86%. Adviser: Prof. Paul C.-P. Chao, Chair and Distinguished Professor at NYCU and IEEE Fellow. Supported by TSRI (formerly CIC) and Wisechip Inc., and funded by the Taiwan MoE scholarship and NSTC Taiwan.</p>
+          </article>
+          <article>
+            <span class="yr">2012 – 2014</span>
+            <h3>M.Tech, Integrated Electronics and Circuits</h3>
+            <p>Indian Institute of Technology Delhi. Thesis on a low-power, high-speed comparator design for a CMOS image sensor, supervised by Prof. Mukul Sarkar. Taped out on 9 June 2014.</p>
+          </article>
+          <article>
+            <span class="yr">2007 – 2011</span>
+            <h3>B.Tech, Electronics and Communication Engineering</h3>
+            <p>Uttar Pradesh Technical University, Lucknow. Thesis on the design and optimization of various logic styles.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="honors">
+    <div class="sec-head">
+      <div><h2>Honors</h2><p class="tag">Awards &amp; service</p></div>
+      <div class="body">
+        <ul class="honors">
+          <li><span class="y">2021</span>Invited to submit a full-length paper, selected from ISCAS 2021, to IEEE Transactions on Biomedical Circuits and Systems</li>
+          <li><span class="y">2021</span>Best Paper Award in track for a low-power PPG acquisition system for mental stress estimation</li>
+          <li><span class="y">2020 (ROC 109)</span>Excellent Achievement in the 109 Annual Industry-University Plan of the Engineering, for the PPG sensing patch and readouts</li>
+          <li><span class="y">2019</span>FutureTech Breakthrough Award, for the flexible PPG sensor patch</li>
+          <li><span class="y">2019</span>ASME ISPS Fellowship</li>
+          <li><span class="y">2018</span>ASME ISPS conference scholarship</li>
+          <li><span class="y">2017</span>Taiwan MOE Scholarship</li>
+          <li><span class="y">2017</span>MediaTek Scholarship</li>
+          <li><span class="y">Aug 2022 – now</span>Reviewer, IEEE Sensors Journal (IEEE Sensors Council)</li>
+          <li><span class="y">Oct – Nov 2022</span>Reviewer, IEEE Circuits and Systems Society, for AICAS 2023</li>
+          <li><span class="y">2016</span>Qualified GATE 2016 in ECE, organized by IISc Bangalore</li>
+          <li><span class="y">2012 – 2014</span>Merit scholarship from ESSA for M.Tech years 1 and 2</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-head">
+      <div><h2>Selected projects</h2><p class="tag">Design &amp; tape-out</p></div>
+      <div class="body">
+        <div class="proj">
+          <article>
+            <span class="meta">NCTU · TSMC 180 nm</span>
+            <h3>Adaptive readout for an OLED-OPD flexible PPG patch</h3>
+            <p>Multiwavelength sensor with a time-interleaved adaptive analog filter. Includes a TIA, a programmable gain amplifier (1x to 7x), PWM-DAC OLED intensity control and temperature compensation of skin absorption. Worst-case RPTT variation is under 2% from cycle to cycle.</p>
+          </article>
+          <article>
+            <span class="meta">NCTU · TSMC T18</span>
+            <h3>0.5 nA pixel current sensing for AMOLED displays</h3>
+            <p>Push-pull transient current feedforward circuit that senses 0.5 nA within 7 µs. Chip area 125 µm × 46 µm, 990 µW from 3.3 V.</p>
+          </article>
+          <article>
+            <span class="meta">IIT Delhi · UMC 180 nm</span>
+            <h3>Low-power comparator for CMOS image sensors</h3>
+            <p>Semi-dynamic regenerative latch with reduced kickback noise. 915 nW and 190 ns average delay without offset compensation; 1.3 µW and 440 ns with it.</p>
+          </article>
+          <article>
+            <span class="meta">IIT Delhi · 2013</span>
+            <h3>Low swing interconnect</h3>
+            <p>A new driver and receiver pair sits at each end of the wire. Simulation shows an eightfold energy reduction on highly capacitive interconnect.</p>
+          </article>
+          <article>
+            <span class="meta">2017 · HSPICE, BSIMCMG, PTM</span>
+            <h3>7 nm FinFET logic and memory</h3>
+            <p>16-bit adder and pipeline multiplier, 6T SRAM, regenerative latch and latch-based comparator. Uses PTM 7 nm models at VDD 0.5 V with BSIMCMG in HSPICE, and reports FO4 delay for all basic logic gates.</p>
+          </article>
+          <article>
+            <span class="meta">NGI Meerut · 2014 – 2016</span>
+            <h3>Student-team mentoring</h3>
+            <p>Mentored a team of five on a 4-bit flash ADC design, and led a boost converter project and a PAM, PWM and PPM modulator study.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="contact" style="padding-block:0">
+    <div class="contact">
+      <div>
+        <h2>Let's talk analog</h2>
+        <p>For academic or professional questions, or to explore a collaboration, write to me.</p>
+      </div>
+      <dl>
+        <dt>Email</dt>
+        <dd><span id="mail">rajeevvce2007@gmail.com</span><button class="copy" id="copy" type="button">Copy</button></dd>
+        <dt>LinkedIn</dt>
+        <dd><a href="https://www.linkedin.com/in/rajeevvce2007/" target="_blank" rel="noopener">linkedin.com/in/rajeevvce2007</a></dd>
+        <dt>Scholar</dt>
+        <dd><a href="https://scholar.google.com.tw/citations?user=lWe4Q2UAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar profile</a></dd>
+        <dt>ResearchGate</dt>
+        <dd><a href="https://www.researchgate.net/profile/Rajeev-Kumar-Pandey" target="_blank" rel="noopener">Rajeev Kumar Pandey</a></dd>
+        <dt>Site</dt>
+        <dd><a href="https://rajeev2007.github.io/" target="_blank" rel="noopener">rajeev2007.github.io</a></dd>
+      </dl>
+    </div>
+    <footer>Content drawn from rajeev2007.github.io and his LinkedIn profile.</footer>
+  </section>
+</main>
+
+<script>
+(function () {
+  var canvas = document.getElementById('ppg');
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W, H, dpr;
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = canvas.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  // One beat of a PPG pulse: systolic peak, dicrotic notch, diastolic bump. p in 0..1
+  function g(p, c, w) { var d = (p - c) / w; return Math.exp(-d * d); }
+  function pulse(p) { return 0.95 * g(p, 0.2, 0.07) + 0.38 * g(p, 0.48, 0.1) - 0.06 * g(p, 0.36, 0.03); }
+  var beat = 0.92; // seconds per beat
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    var grid = css('--scope-grid'), trace = css('--scope-trace');
+    ctx.lineWidth = 1; ctx.strokeStyle = grid;
+    ctx.beginPath();
+    for (var x = 0; x <= W; x += W / 10) { ctx.moveTo(Math.round(x) + 0.5, 0); ctx.lineTo(Math.round(x) + 0.5, H); }
+    for (var y = 0; y <= H; y += H / 4) { ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); }
+    ctx.stroke();
+    var span = 3.2 * beat, top = H * 0.12, bot = H * 0.86;
+    ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.strokeStyle = trace;
+    ctx.shadowColor = trace; ctx.shadowBlur = 6;
+    ctx.beginPath();
+    for (var i = 0; i <= W; i++) {
+      var time = t - span * (1 - i / W);
+      var ph = ((time / beat) % 1 + 1) % 1;
+      var drift = 0.03 * Math.sin(time * 0.9);
+      var v = pulse(ph) + drift;
+      var yy = bot - (v / 1.0) * (bot - top);
+      if (i === 0) ctx.moveTo(i, yy); else ctx.lineTo(i, yy);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+  size();
+  var start = performance.now();
+  function frame(now) { draw(((now - start) / 1000) + 3); requestAnimationFrame(frame); }
+  if (reduce) { draw(4); } else { requestAnimationFrame(frame); }
+  window.addEventListener('resize', function () { size(); if (reduce) draw(4); });
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', function () { if (reduce) draw(4); });
+  }
+
+  var btn = document.getElementById('copy'), mail = document.getElementById('mail');
+  btn.addEventListener('click', function () {
+    var text = mail.textContent;
+    function done() { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); }
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(mail);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = 'Selected'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    }
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+})();
+</script>
+
+</body>
+</html>
