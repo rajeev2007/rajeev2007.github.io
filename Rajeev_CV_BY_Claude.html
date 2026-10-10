@@ -169,6 +169,7 @@ summary { cursor: pointer; font-weight: 500; color: var(--accent); padding-block
 .wv.b { stroke: var(--ink); stroke-width: 1.5; }
 .wv.d { stroke: var(--muted); stroke-dasharray: 4 3; stroke-width: 1.2; }
 .wg { stroke: var(--line); stroke-width: 1; }
+.wcur { stroke: var(--accent); stroke-width: 1; opacity: 0.6; }
 .wt { fill: var(--muted); font-family: var(--f-mono); font-size: 10px; }
 .wp { fill: var(--ink); font-family: var(--f-mono); font-size: 10.5px; font-weight: 500; }
 .wn { fill: var(--muted); font-family: var(--f-body); font-size: 10.5px; }
@@ -770,7 +771,7 @@ body { margin: 0; }
     var pw = W - ml - mr, total = H - mt - mb - gap * (o.panels.length - 1), sumh = 0, i;
     for (i = 0; i < o.panels.length; i++) sumh += o.panels[i].h;
     function X(x) { return ml + (x - o.xmin) / (o.xmax - o.xmin) * pw; }
-    var s = '<svg viewBox="0 0 460 230" role="img" aria-label="' + esc(o.alt) + '">', y0 = mt, j, k, p;
+    var s = '<svg viewBox="0 0 460 230" role="img" aria-label="' + esc(o.alt) + '"><defs><clipPath id="wclip"><rect id="wclip-r" x="' + ml + '" y="0" width="' + pw + '" height="' + (H - mb) + '"/></clipPath></defs>', y0 = mt, j, k, p;
     var maps = [];
     for (i = 0; i < o.panels.length; i++) {
       p = o.panels[i];
@@ -784,11 +785,13 @@ body { margin: 0; }
         s += '<text class="wt" x="' + (ml - 6) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end">' + esc(p.yfmt ? p.yfmt(p.yticks[j]) : p.yticks[j]) + '</text>';
       }
       s += '<text class="wp" x="' + (ml + 4) + '" y="' + (top + 11).toFixed(1) + '">' + esc(p.title) + '</text>';
+      s += '<g clip-path="url(#wclip)">';
       for (j = 0; j < p.series.length; j++) {
         var sr = p.series[j], d = '';
         for (k = 0; k < sr.pts.length; k++) d += (k ? ' L' : 'M') + X(sr.pts[k][0]).toFixed(1) + ' ' + Y(sr.pts[k][1]).toFixed(1);
         s += '<path class="wv ' + sr.cls + '" d="' + d + '"/>';
       }
+      s += '</g>';
       y0 += ph + gap;
     }
     for (j = 0; j < o.xticks.length; j++) s += '<text class="wt" x="' + X(o.xticks[j]).toFixed(1) + '" y="' + (H - mb + 14) + '" text-anchor="middle">' + o.xticks[j] + '</text>';
@@ -797,6 +800,7 @@ body { margin: 0; }
       var n = o.notes[j];
       s += '<text class="wn" x="' + X(n.x).toFixed(1) + '" y="' + maps[n.p](n.y).toFixed(1) + '" text-anchor="' + (n.a || 'start') + '">' + esc(n.t) + '</text>';
     }
+    s += '<line id="wcur" class="wcur" x1="' + (ml + pw) + '" y1="' + mt + '" x2="' + (ml + pw) + '" y2="' + (H - mb) + '" visibility="hidden"/>';
     return s + '</svg>';
   }
   function ticks(a, b, step) { var r = []; for (var v = a; v <= b + 1e-9; v += step) r.push(Math.round(v * 1000) / 1000); return r; }
@@ -884,6 +888,26 @@ body { margin: 0; }
     { tab: 'Charge pump', dg: dCP, wv: wCP, cap: 'The output ramps up in clock steps. Once it reaches the target, the comparator gates the clock so the output ripples around it.' }
   ];
 
+  /* oscilloscope-style sweep: the trace draws left to right, holds, then restarts */
+  var DUR = 7000, HOLD = 1400, ML = 46, PW = 402, t0 = 0, rect = null, cur = null;
+  var reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function startSweep() {
+    rect = document.getElementById('wclip-r'); cur = document.getElementById('wcur');
+    t0 = performance.now() - DUR; // open on the finished trace, then sweep
+  }
+  function sweep(now) {
+    if (rect) {
+      var f = Math.min(((now - t0) % (DUR + HOLD)) / DUR, 1), w = f * PW;
+      rect.setAttribute('width', w.toFixed(1));
+      if (cur) {
+        cur.setAttribute('x1', ML + w); cur.setAttribute('x2', ML + w);
+        cur.setAttribute('visibility', f < 1 ? 'visible' : 'hidden');
+      }
+    }
+    requestAnimationFrame(sweep);
+  }
+  if (!reduce) requestAnimationFrame(sweep);
+
   var btns = [];
   function select(i, focus) {
     for (var j = 0; j < btns.length; j++) {
@@ -892,6 +916,7 @@ body { margin: 0; }
     }
     dgEl.innerHTML = BLOCKS[i].dg();
     wvEl.innerHTML = BLOCKS[i].wv();
+    startSweep();
     capEl.textContent = BLOCKS[i].cap;
     if (focus) btns[i].focus();
   }
