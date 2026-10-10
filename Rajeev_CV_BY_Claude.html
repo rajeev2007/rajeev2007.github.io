@@ -139,6 +139,10 @@ section { padding-block: 3rem 0.5rem; }
 details { margin-top: 0.4rem; }
 summary { cursor: pointer; font-weight: 500; color: var(--accent); padding-block: 0.5rem; }
 
+.scopes { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1rem; margin-top: 1.4rem; }
+.scopes .scope { margin: 0; }
+@media (max-width: 40rem) { .scopes { grid-template-columns: minmax(0, 1fr); } }
+
 /* citations */
 .cstats { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; margin: 0 0 1rem; }
 .cstats div { min-width: 0; }
@@ -307,11 +311,18 @@ body { margin: 0; }
           <li>Wide dynamic range, low-noise on-chip microsystem</li>
         </ul>
         <p style="margin-top:1.2rem">Dissertation: <em>Design and Validation of Low Power Integrated Adaptive Readout Circuits for a Flexible OLED-OPD PPG Sensor Patch Towards Accurate Measurement of Bio-Signs.</em></p>
-        <figure class="scope" style="margin:1.4rem 0 0; max-width:36rem" aria-label="Animated photoplethysmography waveform">
-          <div class="scope-head"><span>PPG · OLED-OPD patch</span><span>Live trace</span></div>
-          <canvas id="ppg" width="640" height="220" role="img" aria-label="Scrolling photoplethysmography pulse waveform"></canvas>
-          <div class="scope-foot"><span>Sensing range 20 nA – 10 µA</span><span>HR error &lt; 3.4 bpm</span></div>
-        </figure>
+        <div class="scopes">
+          <figure class="scope" aria-label="Animated photoplethysmography waveform">
+            <div class="scope-head"><span>PPG · OLED-OPD patch</span><span>Simulated trace</span></div>
+            <canvas id="ppg" width="640" height="220" role="img" aria-label="Scrolling photoplethysmography pulse waveform"></canvas>
+            <div class="scope-foot"><span>Sensing range 20 nA – 10 µA</span><span>HR error &lt; 3.4 bpm</span></div>
+          </figure>
+          <figure class="scope" aria-label="Frequency spectrum of the same waveform">
+            <div class="scope-head"><span>FFT · same trace</span><span>0 – 10 Hz</span></div>
+            <canvas id="fft" width="420" height="220" role="img" aria-label="Frequency spectrum of the pulse waveform, peaking at the heart-rate frequency and its harmonics"></canvas>
+            <div class="scope-foot"><span>f0 ≈ 1.09 Hz (65 bpm)</span><span>Dashed line: f0</span></div>
+          </figure>
+        </div>
         <ul class="vids" aria-label="Measurement videos">
           <li><a href="https://www.youtube.com/watch?v=IeXmBVbLzrg" target="_blank" rel="noopener">OLED-OPD sensor patch with readout IC <span>Watch ↗</span></a></li>
           <li><a href="https://www.youtube.com/watch?v=wDBkSUeAj0Q" target="_blank" rel="noopener">Pulse rate and blood pressure from the PPG signal <span>Watch ↗</span></a></li>
@@ -595,54 +606,128 @@ body { margin: 0; }
 
 <script>
 (function () {
-  var canvas = document.getElementById('ppg');
-  var ctx = canvas.getContext('2d');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var W, H, dpr;
-  function size() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var r = canvas.getBoundingClientRect();
-    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  function setup(id) {
+    var c = document.getElementById(id);
+    return c ? { c: c, ctx: c.getContext('2d'), W: 1, H: 1 } : null;
+  }
+  var trace = setup('ppg'), spec = setup('fft');
+  function size(o) {
+    if (!o) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = o.c.getBoundingClientRect();
+    o.W = Math.max(1, Math.round(r.width)); o.H = Math.max(1, Math.round(r.height));
+    o.c.width = o.W * dpr; o.c.height = o.H * dpr;
+    o.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-  // One beat of a PPG pulse: systolic peak, dicrotic notch, diastolic bump. p in 0..1
+
+  // One beat of a PPG pulse: systolic peak followed by a broad diastolic shoulder. p in 0..1
   function g(p, c, w) { var d = (p - c) / w; return Math.exp(-d * d); }
-  function pulse(p) { return 0.95 * g(p, 0.2, 0.07) + 0.38 * g(p, 0.48, 0.1) - 0.06 * g(p, 0.36, 0.03); }
-  var beat = 0.92; // seconds per beat
-  function draw(t) {
+  function pulse(p) { return 0.95 * g(p, 0.2, 0.12) + 0.40 * g(p, 0.42, 0.14); }
+  var beat = 0.92; // seconds per beat, about 65 bpm
+  function sig(time) {
+    var ph = ((time / beat) % 1 + 1) % 1;
+    return pulse(ph) + 0.03 * Math.sin(time * 0.9);
+  }
+
+  function drawTrace(t) {
+    var ctx = trace.ctx, W = trace.W, H = trace.H;
     ctx.clearRect(0, 0, W, H);
-    var grid = css('--scope-grid'), trace = css('--scope-trace');
+    var grid = css('--scope-grid'), col = css('--scope-trace');
     ctx.lineWidth = 1; ctx.strokeStyle = grid;
     ctx.beginPath();
     for (var x = 0; x <= W; x += W / 10) { ctx.moveTo(Math.round(x) + 0.5, 0); ctx.lineTo(Math.round(x) + 0.5, H); }
     for (var y = 0; y <= H; y += H / 4) { ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); }
     ctx.stroke();
     var span = 3.2 * beat, top = H * 0.12, bot = H * 0.86;
-    ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.strokeStyle = trace;
-    ctx.shadowColor = trace; ctx.shadowBlur = 6;
+    ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.strokeStyle = col;
+    ctx.shadowColor = col; ctx.shadowBlur = 6;
     ctx.beginPath();
     for (var i = 0; i <= W; i++) {
-      var time = t - span * (1 - i / W);
-      var ph = ((time / beat) % 1 + 1) % 1;
-      var drift = 0.03 * Math.sin(time * 0.9);
-      var v = pulse(ph) + drift;
-      var yy = bot - (v / 1.0) * (bot - top);
+      var yy = bot - sig(t - span * (1 - i / W)) * (bot - top);
       if (i === 0) ctx.moveTo(i, yy); else ctx.lineTo(i, yy);
     }
     ctx.stroke();
     ctx.shadowBlur = 0;
   }
-  size();
-  var start = performance.now();
-  function frame(now) { draw(((now - start) / 1000) + 3); requestAnimationFrame(frame); }
-  if (reduce) { draw(4); } else { requestAnimationFrame(frame); }
-  window.addEventListener('resize', function () { size(); if (reduce) draw(4); });
-  if (window.matchMedia) {
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    if (mq.addEventListener) mq.addEventListener('change', function () { if (reduce) draw(4); });
+
+  // Spectrum of the same waveform: Hann-windowed FFT of the last 5.12 s sampled at 50 Hz
+  var N = 256, FS = 50, FMAX = 10;
+  var re = new Float64Array(N), im = new Float64Array(N), win = new Float64Array(N);
+  for (var k = 0; k < N; k++) win[k] = 0.5 - 0.5 * Math.cos(2 * Math.PI * k / (N - 1));
+  function fft() {
+    var n = N, i, j = 0, bit, tmp;
+    for (i = 1; i < n; i++) {
+      bit = n >> 1;
+      for (; j & bit; bit >>= 1) j ^= bit;
+      j ^= bit;
+      if (i < j) { tmp = re[i]; re[i] = re[j]; re[j] = tmp; tmp = im[i]; im[i] = im[j]; im[j] = tmp; }
+    }
+    for (var len = 2; len <= n; len <<= 1) {
+      var ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+      for (i = 0; i < n; i += len) {
+        var cr = 1, ci = 0;
+        for (var m = 0; m < len / 2; m++) {
+          var a = i + m, b = a + len / 2;
+          var xr = re[b] * cr - im[b] * ci, xi = re[b] * ci + im[b] * cr;
+          re[b] = re[a] - xr; im[b] = im[a] - xi;
+          re[a] += xr; im[a] += xi;
+          var nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr;
+        }
+      }
+    }
   }
+  function drawSpec(t) {
+    var ctx = spec.ctx, W = spec.W, H = spec.H;
+    var k, mean = 0, s = new Float64Array(N);
+    for (k = 0; k < N; k++) { s[k] = sig(t - (N - 1 - k) / FS); mean += s[k]; }
+    mean /= N;
+    for (k = 0; k < N; k++) { re[k] = (s[k] - mean) * win[k]; im[k] = 0; }
+    fft();
+    var nb = Math.floor(FMAX * N / FS), mag = new Float64Array(nb + 1), mx = 1e-9;
+    for (k = 0; k <= nb; k++) { mag[k] = Math.sqrt(re[k] * re[k] + im[k] * im[k]); if (k > 0 && mag[k] > mx) mx = mag[k]; }
+    var grid = css('--scope-grid'), col = css('--scope-trace'), lab = css('--scope-label');
+    var padL = 8, padR = 8, padT = 10, padB = 20;
+    var pw = W - padL - padR, ph = H - padT - padB;
+    function fx(f) { return padL + (f / FMAX) * pw; }
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1; ctx.strokeStyle = grid; ctx.fillStyle = lab;
+    ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace'; ctx.textAlign = 'center';
+    ctx.beginPath();
+    for (var f = 0; f <= FMAX; f += 2) {
+      var gx = Math.round(fx(f)) + 0.5;
+      ctx.moveTo(gx, padT); ctx.lineTo(gx, padT + ph);
+    }
+    ctx.moveTo(padL, padT + ph + 0.5); ctx.lineTo(padL + pw, padT + ph + 0.5);
+    ctx.stroke();
+    for (f = 0; f <= FMAX; f += 2) ctx.fillText(f + (f === FMAX ? ' Hz' : ''), Math.min(Math.max(fx(f), 10), W - 14), H - 6);
+    // heart-rate fundamental marker
+    var f0 = 1 / beat;
+    ctx.setLineDash([3, 3]); ctx.strokeStyle = lab; ctx.beginPath();
+    ctx.moveTo(Math.round(fx(f0)) + 0.5, padT); ctx.lineTo(Math.round(fx(f0)) + 0.5, padT + ph); ctx.stroke();
+    ctx.setLineDash([]);
+    // spectrum
+    ctx.beginPath(); ctx.moveTo(fx(0), padT + ph);
+    for (k = 0; k <= nb; k++) ctx.lineTo(fx(k * FS / N), padT + ph - (mag[k] / mx) * ph * 0.94);
+    ctx.lineTo(fx(nb * FS / N), padT + ph); ctx.closePath();
+    ctx.globalAlpha = 0.22; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.lineWidth = 1.75; ctx.lineJoin = 'round'; ctx.strokeStyle = col;
+    ctx.beginPath();
+    for (k = 0; k <= nb; k++) {
+      var px = fx(k * FS / N), py = padT + ph - (mag[k] / mx) * ph * 0.94;
+      if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+
+  function resizeAll() { size(trace); size(spec); }
+  function drawAll(t) { if (trace) drawTrace(t); if (spec) drawSpec(t); }
+  resizeAll();
+  var start = performance.now();
+  function frame(now) { drawAll(((now - start) / 1000) + 6); requestAnimationFrame(frame); }
+  if (reduce) { drawAll(6); } else { requestAnimationFrame(frame); }
+  window.addEventListener('resize', function () { resizeAll(); if (reduce) drawAll(6); });
 
   var btn = document.getElementById('copy'), mail = document.getElementById('mail');
   btn.addEventListener('click', function () {
