@@ -174,6 +174,16 @@ summary { cursor: pointer; font-weight: 500; color: var(--accent); padding-block
 .wp { fill: var(--ink); font-family: var(--f-mono); font-size: 10.5px; font-weight: 500; }
 .wn { fill: var(--muted); font-family: var(--f-body); font-size: 10.5px; }
 
+.bd-fig { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.8rem 0.9rem 0.7rem; }
+.bd-scroll { overflow-x: auto; }
+.bd-scroll svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+.bd-fig figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; max-width: 44rem; }
+.bd-a.ctl { stroke: var(--accent); stroke-dasharray: 4 3; }
+.totop-row { display: flex; justify-content: flex-end; margin-top: 1.4rem; }
+.totop { font-family: var(--f-mono); font-size: 0.76rem; letter-spacing: 0.04em; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 0.3rem 0.8rem; background: var(--surface); }
+.totop:hover { color: var(--accent); border-color: var(--accent); }
+.totop:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 /* citations */
 .cstats { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; margin: 0 0 1rem; }
 .cstats div { min-width: 0; }
@@ -252,6 +262,7 @@ body { margin: 0; }
 
 </head>
 <body>
+<div id="top"></div>
 <nav class="nav" aria-label="Sections">
   <div class="wrap">
     <b>Rajeev Pandey</b>
@@ -336,6 +347,7 @@ body { margin: 0; }
         </div>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="research">
@@ -353,6 +365,11 @@ body { margin: 0; }
           <li>Wide dynamic range, low-noise on-chip microsystem</li>
         </ul>
         <p style="margin-top:1.2rem">Dissertation: <em>Design and Validation of Low Power Integrated Adaptive Readout Circuits for a Flexible OLED-OPD PPG Sensor Patch Towards Accurate Measurement of Bio-Signs.</em></p>
+        <p class="sub" style="margin-top:1.6rem">Readout system block diagram</p>
+        <figure class="bd-fig">
+          <div class="bd-scroll"><svg viewBox="0 0 640 248" role="img" aria-label="Block diagram of the OLED-OPD PPG patch readout: OLED driver, OLED, skin, OPD, transimpedance amplifier, band-pass filter, programmable gain amplifier and ADC, with a microcontroller that adapts intensity, filter tuning and gain, a temperature sensor, Bluetooth link and power management"><defs><marker id="ah2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="bd-ah"/></marker></defs><rect class="bd-box acc" x="8" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="39.0" y="39.0" text-anchor="middle">OLED</text><text class="bd-t" x="39.0" y="53.0" text-anchor="middle">driver</text><rect class="bd-box acc" x="88" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="119.0" y="46.0" text-anchor="middle">OLED</text><rect class="bd-box" x="168" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="199.0" y="46.0" text-anchor="middle">Skin</text><rect class="bd-box acc" x="248" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="279.0" y="46.0" text-anchor="middle">OPD</text><rect class="bd-box acc" x="328" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="359.0" y="46.0" text-anchor="middle">TIA</text><rect class="bd-box acc" x="408" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="439.0" y="39.0" text-anchor="middle">Band-pass</text><text class="bd-t" x="439.0" y="53.0" text-anchor="middle">filter</text><rect class="bd-box acc" x="488" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="519.0" y="39.0" text-anchor="middle">PGA</text><text class="bd-t" x="519.0" y="53.0" text-anchor="middle">1x–7x</text><rect class="bd-box acc" x="568" y="20" width="62" height="44" rx="3"/><text class="bd-t" x="599.0" y="46.0" text-anchor="middle">ADC</text><path class="bd-a" d="M70 42.0 L88 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M150 42.0 L168 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M230 42.0 L248 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M310 42.0 L328 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M390 42.0 L408 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M470 42.0 L488 42.0" marker-end="url(#ah2)"/><path class="bd-a" d="M550 42.0 L568 42.0" marker-end="url(#ah2)"/><text class="bd-l" x="159" y="36.0" text-anchor="middle">light</text><text class="bd-l" x="239" y="36.0" text-anchor="middle">light</text><path class="bd-a" d="M599.0 64 L599.0 112 L300 112 L300 150" marker-end="url(#ah2)"/><rect class="bd-box acc" x="200" y="150" width="200" height="48" rx="3"/><text class="bd-t" x="300.0" y="171.0" text-anchor="middle">MCU: control + DSP</text><text class="bd-t" x="300.0" y="185.0" text-anchor="middle">motion rejection, HR, BP</text><path class="bd-a ctl" d="M240 150 L240 92 L39.0 92 L39.0 64" marker-end="url(#ah2)"/><path class="bd-a ctl" d="M439.0 92 L439.0 64" marker-end="url(#ah2)"/><path class="bd-a ctl" d="M519.0 92 L519.0 64" marker-end="url(#ah2)"/><path class="bd-a ctl" d="M240 92 L519.0 92"/><text class="bd-l" x="48" y="108" text-anchor="start">adaptive control:</text><text class="bd-l" x="48" y="121" text-anchor="start">intensity, tuning, gain</text><rect class="bd-box" x="8" y="150" width="84" height="48" rx="3"/><text class="bd-t" x="50.0" y="171.0" text-anchor="middle">Temperature</text><text class="bd-t" x="50.0" y="185.0" text-anchor="middle">sensor</text><path class="bd-a" d="M92 174 L200 174" marker-end="url(#ah2)"/><rect class="bd-box" x="440" y="150" width="84" height="48" rx="3"/><text class="bd-t" x="482.0" y="171.0" text-anchor="middle">Bluetooth</text><text class="bd-t" x="482.0" y="185.0" text-anchor="middle">link</text><path class="bd-a" d="M400 174 L440 174" marker-end="url(#ah2)"/><rect class="bd-box" x="556" y="150" width="76" height="48" rx="3"/><text class="bd-t" x="594.0" y="171.0" text-anchor="middle">Phone</text><text class="bd-t" x="594.0" y="185.0" text-anchor="middle">/ app</text><path class="bd-a" d="M524 174 L556 174" marker-end="url(#ah2)"/><rect class="bd-box" x="8" y="206" width="150" height="34" rx="3"/><text class="bd-t" x="83.0" y="227.0" text-anchor="middle">Power management unit</text><text class="bd-l" x="170" y="227" text-anchor="start">supplies all blocks</text></svg></div>
+          <figcaption>Simplified from the OLED-OPD PPG patch work. The microcontroller adapts OLED intensity, filter tuning and gain to reject motion artifacts, and a temperature sensor supports compensation.</figcaption>
+        </figure>
         <div class="scopes">
           <figure class="scope" aria-label="Animated photoplethysmography waveform">
             <div class="scope-head"><span>PPG · OLED-OPD patch</span><span>Simulated trace</span></div>
@@ -372,6 +389,7 @@ body { margin: 0; }
         </ul>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="publications">
@@ -422,6 +440,7 @@ body { margin: 0; }
         <p class="viz-note" style="margin-top:1.2rem">Entries that name only R.K. Pandey with "et al." do not list the full author team here. See his Google Scholar profile for the complete lists.</p>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="citations">
@@ -475,6 +494,7 @@ body { margin: 0; }
         </div>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="career">
@@ -560,6 +580,7 @@ body { margin: 0; }
         </div>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="honors">
@@ -581,6 +602,7 @@ body { margin: 0; }
         </ul>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
   <section id="projects">
@@ -621,6 +643,7 @@ body { margin: 0; }
         </div>
       </div>
     </div>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 
 
@@ -644,8 +667,22 @@ body { margin: 0; }
       </dl>
     </div>
     <footer>Content drawn from rajeev2007.github.io and his LinkedIn profile.</footer>
+    <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
 </main>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var links = document.querySelectorAll('.totop');
+  for (var i = 0; i < links.length; i++) {
+    links[i].addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  }
+})();
+</script>
 
 <script>
 (function () {
