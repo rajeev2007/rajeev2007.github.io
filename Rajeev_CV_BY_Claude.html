@@ -672,7 +672,7 @@ body { margin: 0; }
       </dl>
     </div>
     <footer>Content drawn from rajeev2007.github.io and his LinkedIn profile.
-      <span id="hits" hidden> · Visits: <span id="hits-n" aria-live="polite">0</span></span>
+      <span id="hits"> · Visits: <strong id="hits-n" aria-live="polite">…</strong></span>
     </footer>
     <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
@@ -1157,7 +1157,7 @@ body { margin: 0; }
 </script>
 
 <script>
-/* Visit counter: counterapi.dev (free, no sign-up). Counts once per browser session; hidden if the service is unreachable. */
+/* Visit counter: counterapi.dev (free, no sign-up). Counts once per browser session; shows 'unavailable' if the service is unreachable. */
 (function () {
   var NS = 'rajeev2007-github-io', KEY = 'visits';
   var base = 'https://api.counterapi.dev/v1/' + NS + '/' + KEY;
@@ -1169,10 +1169,9 @@ body { margin: 0; }
       var n = Number(d.count);
       if (!isFinite(n)) return;
       document.getElementById('hits-n').textContent = n.toLocaleString('en-US');
-      document.getElementById('hits').hidden = false;
       try { sessionStorage.setItem('rp-counted', '1'); } catch (e) {}
     })
-    .catch(function () { /* leave the counter hidden */ });
+    .catch(function () { document.getElementById('hits-n').textContent = 'unavailable'; });
 })();
 </script>
 </body>
