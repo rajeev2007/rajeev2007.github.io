@@ -791,7 +791,7 @@ body { margin: 0; }
   }
   function dBGR() {
     return dwrap(
-      box(8, 60, 110, 60, 'Bandgap core\n(BJT pair + amp)', 'acc') +
+      label(8, 50, 'VDD 1.8 V', 'start') + box(8, 60, 110, 60, 'Bandgap core\n(BJT pair + amp)', 'acc') +
       arrow([[118, 90], [150, 90]]) +
       box(150, 66, 64, 48, 'Sample\nswitch') +
       arrow([[214, 90], [250, 90]]) +
@@ -801,9 +801,9 @@ body { margin: 0; }
       box(120, 160, 120, 44, 'Duty-cycle\ncontrol', 'acc') +
       arrow([[150, 182], [63, 182], [63, 120]]) +
       arrow([[182, 160], [182, 114]]) +
-      label(420, 94, 'to ADC /', 'start') + label(420, 108, 'LDO', 'start') +
+      label(350, 128, 'VREF = 1.2 V', 'start') + label(350, 142, 'to ADC / LDO', 'start') +
       label(262, 138, 'holds VREF', 'start') + label(262, 152, 'between refreshes', 'start'),
-      'Block diagram: duty-cycled bandgap core, sample switch, hold capacitor and timing control');
+      'Block diagram: 1.8 V supply, duty-cycled bandgap core, sample switch, hold capacitor and timing control');
   }
   function dCP() {
     return dwrap(
@@ -924,20 +924,20 @@ body { margin: 0; }
     });
   }
   function wBGR() {
-    var dt = 0.01, per = 2.5, on = 0.15, droop = 0.0035 / (per - on), v = 0.9965, en = [], vr = [], t, e;
+    var dt = 0.01, per = 2.5, on = 0.3, droop = 0.0012 / (per - on), v = 0.9992, en = [], vr = [], t, e;
     for (t = 0; t <= 10.0001; t += dt) {
       e = (t % per) < on;
-      if (e) v += (1 - v) * (1 - Math.exp(-dt / 0.03)); else v -= droop * dt;
-      en.push([t, e ? 1 : 0]); vr.push([t, v]);
+      if (e) v += (1 - v) * (1 - Math.exp(-dt / 0.06)); else v -= droop * dt;
+      en.push([t, e ? 1.8 : 0]); vr.push([t, 1.2 * v]);
     }
     return plot({
-      alt: 'Simulated duty-cycled bandgap: the core is enabled briefly each period and the hold capacitor keeps the reference between refreshes',
+      alt: 'Simulated duty-cycled bandgap: a 1.8 V enable clock switches the core on briefly each period, and the hold capacitor keeps the 1.2 V reference between refreshes',
       xmin: 0, xmax: 10, xticks: ticks(0, 10, 2), xlab: 'time (ms)',
       panels: [
-        { h: 0.8, title: 'ENABLE', ymin: -0.2, ymax: 1.4, yticks: [0, 1], series: [{ pts: en, cls: 'b' }] },
-        { h: 1.4, title: 'VREF held (normalized)', ymin: 0.992, ymax: 1.003, yticks: [0.994, 0.998, 1.002], yfmt: function (v) { return v.toFixed(3); }, series: [{ pts: vr, cls: 'a' }] }
+        { h: 0.9, title: 'ENABLE clock, 1.8 V (VDD)', ymin: -0.4, ymax: 3.0, yticks: [0, 1.8], yfmt: function (v) { return v === 1.8 ? '1.8 V' : '0'; }, series: [{ pts: en, cls: 'b' }] },
+        { h: 1.4, title: 'Bandgap output, 1.2 V', ymin: 1.1945, ymax: 1.2025, yticks: [1.196, 1.198, 1.2], yfmt: function (v) { return v.toFixed(3); }, series: [{ pts: [[0, 1.2], [10, 1.2]], cls: 'd' }, { pts: vr, cls: 'a' }] }
       ],
-      notes: [{ p: 1, x: 3.0, y: 0.9945, t: 'slow droop on C hold' }]
+      notes: [{ p: 1, x: 5.2, y: 1.1955, t: 'slow droop on C hold' }]
     });
   }
   function wCP() {
