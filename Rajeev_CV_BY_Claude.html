@@ -672,7 +672,8 @@ body { margin: 0; }
       </dl>
     </div>
     <footer>Content drawn from rajeev2007.github.io and his LinkedIn profile.
-      <span id="hits"> · Visits: <strong id="hits-n" aria-live="polite">…</strong></span>
+      <span id="total"> · Total visits: <strong id="total-n" aria-live="polite">…</strong></span>
+      <span id="hits"> · Your visits on this device: <strong id="hits-n" aria-live="polite">1</strong></span>
     </footer>
     <div class="totop-row"><a class="totop" href="#top">Back to top ↑</a></div>
   </section>
@@ -1157,21 +1158,51 @@ body { margin: 0; }
 </script>
 
 <script>
-/* Visit counter: counterapi.dev (free, no sign-up). Counts once per browser session; shows 'unavailable' if the service is unreachable. */
+/* Local visit counter: counts visits from this browser only, stored in localStorage. Counts once per browser session. */
+(function () {
+  var out = document.getElementById('hits-n');
+  if (!out) return;
+  var n = 1;
+  try {
+    var seen = sessionStorage.getItem('rp-counted') === '1';
+    n = parseInt(localStorage.getItem('rp-visits') || '0', 10) || 0;
+    if (!seen) { n += 1; localStorage.setItem('rp-visits', String(n)); sessionStorage.setItem('rp-counted', '1'); }
+    else if (n < 1) n = 1;
+  } catch (e) { n = 1; }
+  out.textContent = n.toLocaleString('en-US');
+})();
+</script>
+<script>
+/* Total visit counter: tries two free, no-sign-up services in turn; counts once per browser session.
+   Shows "unavailable" (reason in the tooltip) if neither can be reached, e.g. when an ad blocker blocks them. */
 (function () {
   var NS = 'rajeev2007-github-io', KEY = 'visits';
-  var base = 'https://api.counterapi.dev/v1/' + NS + '/' + KEY;
+  var out = document.getElementById('total-n');
+  if (!out) return;
   var seen = false;
-  try { seen = sessionStorage.getItem('rp-counted') === '1'; } catch (e) {}
-  fetch(seen ? base : base + '/up', { cache: 'no-store' })
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (d) {
-      var n = Number(d.count);
-      if (!isFinite(n)) return;
-      document.getElementById('hits-n').textContent = n.toLocaleString('en-US');
-      try { sessionStorage.setItem('rp-counted', '1'); } catch (e) {}
-    })
-    .catch(function () { document.getElementById('hits-n').textContent = 'unavailable'; });
+  try { seen = sessionStorage.getItem('rp-total-counted') === '1'; } catch (e) {}
+  var providers = [
+    { url: 'https://abacus.jasoncameron.dev/' + (seen ? 'get' : 'hit') + '/' + NS + '/' + KEY, read: function (d) { return d.value; } },
+    { url: 'https://api.counterapi.dev/v1/' + NS + '/' + KEY + (seen ? '' : '/up'), read: function (d) { return d.count; } }
+  ];
+  var reasons = [];
+  function attempt(i) {
+    if (i >= providers.length) {
+      out.textContent = 'unavailable'; out.title = reasons.join(' | ');
+      if (window.console) console.warn('Total counter unavailable:', reasons);
+      return;
+    }
+    fetch(providers[i].url, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        var n = Number(providers[i].read(d));
+        if (!isFinite(n)) throw new Error('unexpected reply');
+        out.textContent = n.toLocaleString('en-US');
+        try { sessionStorage.setItem('rp-total-counted', '1'); } catch (e) {}
+      })
+      .catch(function (e) { reasons.push('provider ' + (i + 1) + ': ' + (e && e.message || e)); attempt(i + 1); });
+  }
+  attempt(0);
 })();
 </script>
 </body>
