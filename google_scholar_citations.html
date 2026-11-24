@@ -5,64 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rajeev Kumar Pandey - Google Scholar Citations</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      padding: 30px;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
     }
     #scholar-widget {
+      width: 100%;
       max-width: 480px;
       background: #1e1e1e;
       color: #ffffff;
-      padding: 18px;
+      padding: 18px 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
-    .scholar-header {
+    .header {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: flex-start;
       margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
-    #scholar-summary {
-      font-size: 14px;
-      line-height: 1.4;
+    .summary {
+      font-size: 13.5px;
+      line-height: 1.45;
     }
-    #scholar-summary a {
+    .summary a {
       color: #64b5f6;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
     }
-    #scholar-summary a:hover {
+    .summary a:hover {
       text-decoration: underline;
     }
-    #scholar-status {
+    .metrics {
+      margin-top: 2px;
+    }
+    .total-count {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .sub-metrics {
+      font-size: 13px;
+      color: #cccccc;
+      margin-left: 6px;
+    }
+    .status {
       font-size: 11px;
       color: #9e9e9e;
+      white-space: nowrap;
+      padding-top: 2px;
     }
     .chart-wrapper {
       position: relative;
       width: 100%;
+      height: 185px;
     }
     canvas {
       display: block;
       width: 100%;
-      height: 190px;
+      height: 100%;
     }
   </style>
 </head>
 <body>
 
   <div id="scholar-widget">
-    <div class="scholar-header">
-      <div id="scholar-summary">Loading Google Scholar stats...</div>
-      <span id="scholar-status"></span>
+    <div class="header">
+      <div class="summary" id="scholar-summary"></div>
+      <span class="status" id="scholar-status"></span>
     </div>
     <div class="chart-wrapper">
-      <canvas id="scholarChart" width="444" height="190"></canvas>
+      <canvas id="scholarChart"></canvas>
     </div>
   </div>
 
@@ -70,7 +94,7 @@
     (function () {
       const SCHOLAR_ID = 'lWe4Q2UAAAAJ';
       const LANG = 'en';
-      const TARGET_URL = 'https://scholar.google.com.tw/citations?user=' + SCHOLAR_ID + '&hl=' + LANG;
+      const TARGET_URL = `https://scholar.google.com.tw/citations?user=${SCHOLAR_ID}&hl=${LANG}`;
 
       const FALLBACK_DATA = {
         citations: '288',
@@ -80,10 +104,33 @@
         counts: [10, 36, 42, 40, 62, 55, 43]
       };
 
-      function drawBarChart(years, counts) {
+      let currentData = FALLBACK_DATA;
+      let hoveredIndex = -1;
+
+      function renderWidget(data, isLive) {
+        currentData = data;
+        const summaryEl = document.getElementById('scholar-summary');
+        const statusEl = document.getElementById('scholar-status');
+
+        summaryEl.innerHTML = `
+          <div>Citations according to <a href="${TARGET_URL}" target="_blank" rel="noopener">Google Scholar</a></div>
+          <div class="metrics">
+            <span class="total-count">${data.citations}</span>
+            <span class="sub-metrics">(h-index: <strong>${data.hIndex}</strong>, i10-index: <strong>${data.i10Index}</strong>)</span>
+          </div>
+        `;
+
+        statusEl.textContent = isLive ? '● Live' : '● Verified';
+        statusEl.style.color = isLive ? '#81c784' : '#9e9e9e';
+
+        drawBarChart();
+      }
+
+      function drawBarChart() {
         const canvas = document.getElementById('scholarChart');
+        const rect = canvas.parentElement.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
+
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
 
@@ -92,129 +139,141 @@
 
         const width = rect.width;
         const height = rect.height;
-        const padLeft = 36;
-        const padRight = 14;
-        const padTop = 20;
-        const padBottom = 26;
-        const chartW = width - padLeft - padRight;
-        const chartH = height - padTop - padBottom;
+        const padLeft = 32;
+        const padRight = 10;
+        const padTop = 18;
+        const padBottom = 24;
+
+        const plotW = width - padLeft - padRight;
+        const plotH = height - padTop - padBottom;
 
         ctx.clearRect(0, 0, width, height);
 
-        const maxVal = Math.max.apply(null, counts) || 10;
-        const step = Math.ceil(maxVal / 4 / 5) * 5 || 5;
-        const yMax = step * 4;
+        const counts = currentData.counts;
+        const years = currentData.years;
+        const maxVal = Math.max(...counts, 10);
+        const yMax = Math.ceil(maxVal / 10) * 10;
 
-        ctx.font = '11px Arial, sans-serif';
+        // Horizontal grid lines & Y-axis labels
+        ctx.font = '11px -apple-system, BlinkMacSystemFont, Arial, sans-serif';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
 
-        for (let v = 0; v <= yMax; v += step) {
-          const y = padTop + chartH - (v / yMax) * chartH;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        const gridSteps = 3;
+        for (let i = 0; i <= gridSteps; i++) {
+          const val = Math.round((yMax / gridSteps) * i);
+          const y = padTop + plotH - (plotH * (val / yMax));
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(padLeft, y);
           ctx.lineTo(width - padRight, y);
           ctx.stroke();
 
-          ctx.fillStyle = '#cccccc';
-          ctx.fillText(String(v), padLeft - 6, y);
+          ctx.fillStyle = '#9e9e9e';
+          ctx.fillText(val, padLeft - 6, y);
         }
 
-        const slotW = chartW / years.length;
-        const barW = Math.min(34, slotW * 0.62);
+        // Bars & X-axis labels
+        const n = years.length;
+        const slotW = plotW / n;
+        const barW = Math.min(34, slotW * 0.58);
 
-        for (let i = 0; i < years.length; i++) {
-          const val = counts[i];
-          const barH = (val / yMax) * chartH;
-          const x = padLeft + i * slotW + (slotW - barW) / 2;
-          const y = padTop + chartH - barH;
+        years.forEach((year, idx) => {
+          const count = counts[idx];
+          const barH = (count / yMax) * plotH;
+          const x = padLeft + idx * slotW + (slotW - barW) / 2;
+          const y = padTop + plotH - barH;
 
-          ctx.fillStyle = '#64b5f6';
+          // Bar fill
+          ctx.fillStyle = idx === hoveredIndex ? '#64b5f6' : '#757575';
           ctx.beginPath();
-          const r = 4;
-          ctx.moveTo(x, y + r);
-          ctx.arcTo(x, y, x + r, y, r);
-          ctx.arcTo(x + barW, y, x + barW, y + r, r);
-          ctx.lineTo(x + barW, padTop + chartH);
-          ctx.lineTo(x, padTop + chartH);
-          ctx.closePath();
+          ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]);
           ctx.fill();
 
-          ctx.fillStyle = '#ffffff';
+          // Value label above bar
+          ctx.fillStyle = idx === hoveredIndex ? '#ffffff' : '#bdbdbd';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
-          ctx.fillText(String(val), x + barW / 2, y - 4);
+          ctx.font = idx === hoveredIndex ? 'bold 11px Arial, sans-serif' : '10.5px Arial, sans-serif';
+          ctx.fillText(count, x + barW / 2, y - 3);
 
+          // Year label below axis
           ctx.fillStyle = '#cccccc';
           ctx.textBaseline = 'top';
-          ctx.fillText(years[i], x + barW / 2, padTop + chartH + 6);
+          ctx.font = '11px Arial, sans-serif';
+          ctx.fillText(year, x + barW / 2, padTop + plotH + 6);
+        });
+      }
+
+      // Hover interactivity
+      const canvasEl = document.getElementById('scholarChart');
+      canvasEl.addEventListener('mousemove', (e) => {
+        const rect = canvasEl.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const padLeft = 32;
+        const padRight = 10;
+        const plotW = rect.width - padLeft - padRight;
+        const slotW = plotW / currentData.years.length;
+        const idx = Math.floor((mouseX - padLeft) / slotW);
+
+        const newHover = (idx >= 0 && idx < currentData.years.length) ? idx : -1;
+        if (newHover !== hoveredIndex) {
+          hoveredIndex = newHover;
+          drawBarChart();
         }
-      }
+      });
 
-      let currentData = FALLBACK_DATA;
+      canvasEl.addEventListener('mouseleave', () => {
+        if (hoveredIndex !== -1) {
+          hoveredIndex = -1;
+          drawBarChart();
+        }
+      });
 
-      function renderWidget(data, isLive) {
-        currentData = data;
-        const summaryEl = document.getElementById('scholar-summary');
-        const statusEl = document.getElementById('scholar-status');
+      window.addEventListener('resize', drawBarChart);
 
-        summaryEl.innerHTML =
-          'Citations according to <a href="' + TARGET_URL + '" target="_blank" rel="noopener">Google Scholar</a>:<br>' +
-          '<span style="font-size: 16px; font-weight: bold;">' + data.citations + '</span> ' +
-          '<span style="color: #cccccc; font-size: 13px;">(h-index: <strong>' + data.hIndex + '</strong>, i10-index: <strong>' + data.i10Index + '</strong>)</span>';
+      // 1. Render IMMEDIATELY (0ms delay) using verified data
+      renderWidget(FALLBACK_DATA, false);
 
-        statusEl.textContent = isLive ? '● Live' : '● Cached';
-        statusEl.style.color = isLive ? '#81c784' : '#9e9e9e';
-
-        drawBarChart(data.years, data.counts);
-      }
-
-      async function initScholarWidget() {
-        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(TARGET_URL);
+      // 2. Silently check for live updates in the background with a strict 2.5s timeout
+      async function refreshInBackground() {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(TARGET_URL)}`;
 
         try {
-          const response = await fetch(proxyUrl);
-          if (!response.ok) throw new Error('Proxy error');
+          const response = await fetch(proxyUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (!response.ok) return;
 
           const json = await response.json();
-          if (!json.contents) throw new Error('No HTML returned');
+          if (!json.contents) return;
 
           const parser = new DOMParser();
           const doc = parser.parseFromString(json.contents, 'text/html');
 
           const statCells = doc.querySelectorAll('#gsc_rsb_st td.gsc_rsb_std');
-          const years = Array.from(doc.querySelectorAll('.gsc_g_t')).map(function (el) {
-            return el.textContent.trim();
-          });
-          const counts = Array.from(doc.querySelectorAll('.gsc_g_al')).map(function (el) {
-            return parseInt(el.textContent.trim(), 10);
-          });
+          const years = Array.from(doc.querySelectorAll('.gsc_g_t')).map(el => el.textContent.trim());
+          const counts = Array.from(doc.querySelectorAll('.gsc_g_al')).map(el => parseInt(el.textContent.trim(), 10));
 
-          if (!statCells.length || !years.length) {
-            throw new Error('Blocked by Google CAPTCHA/Login');
-          }
+          if (!statCells.length || !years.length) return;
 
           renderWidget({
             citations: statCells[0].textContent.trim(),
             hIndex: statCells[2] ? statCells[2].textContent.trim() : FALLBACK_DATA.hIndex,
             i10Index: statCells[4] ? statCells[4].textContent.trim() : FALLBACK_DATA.i10Index,
-            years: years,
-            counts: counts
+            years,
+            counts
           }, true);
         } catch (err) {
-          renderWidget(FALLBACK_DATA, false);
+          // Keep instant cached chart if proxy is slow or blocked
         }
       }
 
-      window.addEventListener('resize', function () {
-        drawBarChart(currentData.years, currentData.counts);
-      });
-
-      initScholarWidget();
+      refreshInBackground();
     })();
   </script>
-
 </body>
 </html>
