@@ -1,0 +1,68 @@
+name: Update Google Scholar Data
+
+on:
+  schedule:
+    # Runs automatically every day at 02:00 UTC
+    - cron: '0 2 * * *'
+  # Allows you to trigger the update manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-scholar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install beautifulsoup4 requests
+
+      - name: Fetch Google Scholar stats and update data.json
+        run: |
+          python -c "
+          import json, re, requests
+          from bs4 import BeautifulSoup
+
+          url = 'https://google.com'
+          headers = {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+          }
+
+          resp = requests.get(url, headers=headers, timeout=20)
+          resp.raise_for_status()
+          soup = BeautifulSoup(resp.text, 'html.parser')
+
+          stats = [td.get_text(strip=True) for td in soup.select('#gsc_rsb_st td.gsc_rsb_std')]
+          years = [el.get_text(strip=True) for el in soup.select('.gsc_g_t')]
+          counts = [int(el.get_text(strip=True)) for el in soup.select('.gsc_g_al')]
+
+          if len(stats) >= 5 and years and counts:
+              data = {
+                  'citations': stats[0],
+                  'hIndex': stats[2],
+                  'i10Index': stats[4],
+                  'years': years,
+                  'counts': counts
+              }
+              with open('data.json', 'w', encoding='utf-8') as f:
+                  json.dump(data, f, indent=2)
+              print('Successfully updated data.json:', data)
+          else:
+              raise RuntimeError('Blocked by Google CAPTCHA or unexpected HTML structure')
+          "
+
+      - name: Commit and push updated data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@://github.com"
+          git add data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Google Scholar citations" && git push
