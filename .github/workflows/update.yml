@@ -1,11 +1,8 @@
-FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true
 name: Update Google Scholar Data
 
 on:
   schedule:
-    # Runs automatically every day at 02:00 UTC
     - cron: '0 2 * * *'
-  # Allows you to trigger the update manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -29,41 +26,56 @@ jobs:
 
       - name: Fetch Google Scholar stats and update data.json
         run: |
-          python -c "
-          import json, re, requests
+          python - << 'EOF'
+          import json
+          import requests
           from bs4 import BeautifulSoup
 
-          url = 'https://google.com'
+          urls = [
+              'https://google.com',
+              'https://google.com.tw',
+              'https://google.de'
+          ]
+
           headers = {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+              'Accept-Language': 'en-US,en;q=0.9'
           }
 
-          resp = requests.get(url, headers=headers, timeout=20)
-          resp.raise_for_status()
-          soup = BeautifulSoup(resp.text, 'html.parser')
+          updated = False
+          for url in urls:
+              try:
+                  resp = requests.get(url, headers=headers, timeout=20)
+                  if resp.status_code != 200:
+                      continue
+                  soup = BeautifulSoup(resp.text, 'html.parser')
+                  stats_map = dict(enumerate(td.get_text(strip=True) for td in soup.select('#gsc_rsb_st td.gsc_rsb_std')))
+                  years = [el.get_text(strip=True) for el in soup.select('.gsc_g_t')]
+                  counts = [int(el.get_text(strip=True)) for el in soup.select('.gsc_g_al')]
 
-          stats = [td.get_text(strip=True) for td in soup.select('#gsc_rsb_st td.gsc_rsb_std')]
-          years = [el.get_text(strip=True) for el in soup.select('.gsc_g_t')]
-          counts = [int(el.get_text(strip=True)) for el in soup.select('.gsc_g_al')]
+                  if len(stats_map) >= 5 and years and counts:
+                      data = {
+                          'citations': stats_map.get(0),
+                          'hIndex': stats_map.get(2),
+                          'i10Index': stats_map.get(4),
+                          'years': years,
+                          'counts': counts
+                      }
+                      with open('data.json', 'w', encoding='utf-8') as f:
+                          json.dump(data, f, indent=2)
+                      print('Successfully updated data.json:', data)
+                      updated = True
+                      break
+              except Exception as e:
+                  print(f'Attempt failed for {url}: {e}')
 
-          if len(stats) >= 5 and years and counts:
-              data = {
-                  'citations': stats[0],
-                  'hIndex': stats[2],
-                  'i10Index': stats[4],
-                  'years': years,
-                  'counts': counts
-              }
-              with open('data.json', 'w', encoding='utf-8') as f:
-                  json.dump(data, f, indent=2)
-              print('Successfully updated data.json:', data)
-          else:
-              raise RuntimeError('Blocked by Google CAPTCHA or unexpected HTML structure')
-          "
+          if not updated:
+              print('Google Scholar rate-limited this runner IP; keeping existing data.json.')
+          EOF
 
       - name: Commit and push updated data.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@://github.com"
           git add data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Google Scholar citations" && git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Google Scholar citations" && git push)
