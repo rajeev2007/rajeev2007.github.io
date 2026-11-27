@@ -2,7 +2,6 @@ name: Update Google Scholar Data
 
 on:
   schedule:
-    # Runs once daily at 02:17 UTC (10:17 AM Taiwan time) — off-minute avoids top-of-hour traffic spikes
     - cron: '17 2 * * *'
   workflow_dispatch:
 
@@ -23,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install scholarly
+        run: pip install scholarly "bibtexparser<2.0.0"
 
       - name: Fetch stats for ID lWe4Q2UAAAAJ only
         run: |
