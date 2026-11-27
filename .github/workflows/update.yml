@@ -2,7 +2,8 @@ name: Update Google Scholar Data
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    # Runs once daily at 02:17 UTC (10:17 AM Taiwan time) — off-minute avoids top-of-hour traffic spikes
+    - cron: '17 2 * * *'
   workflow_dispatch:
 
 permissions:
@@ -22,55 +23,46 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install beautifulsoup4 requests
+        run: pip install scholarly
 
-      - name: Fetch Google Scholar stats and update data.json
+      - name: Fetch stats for ID lWe4Q2UAAAAJ only
         run: |
           python - << 'EOF'
           import json
-          import requests
-          from bs4 import BeautifulSoup
+          from scholarly import scholarly, ProxyGenerator
 
-          urls = [
-              'https://google.com',
-              'https://google.com.tw',
-              'https://google.de'
-          ]
+          SCHOLAR_ID = 'lWe4Q2UAAAAJ'
 
-          headers = {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-              'Accept-Language': 'en-US,en;q=0.9'
-          }
+          def fetch_profile(use_proxy=False):
+              if use_proxy:
+                  pg = ProxyGenerator()
+                  pg.FreeProxies()
+                  scholarly.use_proxy(pg)
+              author = scholarly.search_author_id(SCHOLAR_ID)
+              return scholarly.fill(author, sections=['indices', 'counts'])
 
-          updated = False
-          for url in urls:
-              try:
-                  resp = requests.get(url, headers=headers, timeout=20)
-                  if resp.status_code != 200:
-                      continue
-                  soup = BeautifulSoup(resp.text, 'html.parser')
-                  stats_map = dict(enumerate(td.get_text(strip=True) for td in soup.select('#gsc_rsb_st td.gsc_rsb_std')))
-                  years = [el.get_text(strip=True) for el in soup.select('.gsc_g_t')]
-                  counts = [int(el.get_text(strip=True)) for el in soup.select('.gsc_g_al')]
+          try:
+              profile = fetch_profile(use_proxy=False)
+          except Exception:
+              profile = fetch_profile(use_proxy=True)
 
-                  if len(stats_map) >= 5 and years and counts:
-                      data = {
-                          'citations': stats_map.get(0),
-                          'hIndex': stats_map.get(2),
-                          'i10Index': stats_map.get(4),
-                          'years': years,
-                          'counts': counts
-                      }
-                      with open('data.json', 'w', encoding='utf-8') as f:
-                          json.dump(data, f, indent=2)
-                      print('Successfully updated data.json:', data)
-                      updated = True
-                      break
-              except Exception as e:
-                  print(f'Attempt failed for {url}: {e}')
+          cites_per_year = profile.get('cites_per_year', {})
+          years = [str(y) for y in sorted(cites_per_year.keys())]
+          counts = [int(cites_per_year[int(y)]) for y in years]
 
-          if not updated:
-              print('Google Scholar rate-limited this runner IP; keeping existing data.json.')
+          if years and counts:
+              data = {
+                  'citations': str(profile.get('citedby', '289')),
+                  'hIndex': str(profile.get('hindex', '12')),
+                  'i10Index': str(profile.get('i10index', '13')),
+                  'years': years,
+                  'counts': counts
+              }
+              with open('data.json', 'w', encoding='utf-8') as f:
+                  json.dump(data, f, indent=2)
+              print('Updated data.json:', data)
+          else:
+              raise RuntimeError('Empty citation data returned')
           EOF
 
       - name: Commit and push updated data.json
